@@ -28,6 +28,8 @@ You can use the course with an AI mentor or alone. With an AI mentor, the mentor
 3. Do the reading and the exercises in the given order.
 4. Do the project stage for the phase.
 5. Do a check of the "Done criteria" list at the end of the phase. Go to the next phase only when all items are complete.
+
+   **Fast track:** if you already know the subject of a phase, read its "Done criteria" first. If you can meet each criterion with evidence (an explanation in your notebook, or code), do only the exercises marked "(core)" and the project stage. Never skip a project stage.
 6. Write your notes, compiler errors that you did not understand, and design decisions in your engineering notebook.
 7. Record your progress in `learner/progress.md`. Copy it from [templates/progress-template.md](templates/progress-template.md).
 

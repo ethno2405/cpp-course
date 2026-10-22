@@ -223,6 +223,17 @@ My perft result for depth 4 is wrong. Help me find the bad move.
 My server stops and does nothing after the first WebSocket message. Help me find the cause.
 ```
 
+### Fast track (for experienced learners)
+
+```
+I already know C++ well. Test me out of phase 2.
+I know topic 3.6. Check me and skip it.
+I have my own CMake setup. Review it against the phase 0 requirements.
+Skip topic 4.10 without a check.
+```
+
+The mentor checks your knowledge with a few questions before you skip. You never skip a project stage, because each stage builds on the previous one.
+
 ### Quizzes and reviews
 
 ```

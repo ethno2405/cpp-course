@@ -62,6 +62,46 @@ The learner builds the project setup of the course from scratch in phase 0, exer
 - At the end of exercise 0.9, review the setup against the requirements table at the start of the phase 0 exercises. Build it with the learner's toolchain. Check that the warnings and the sanitizers really work (a deliberate defect must fail the build or the test run).
 - From phase 1, the learner copies their own setup to each new project. When a later phase needs more (ThreadSanitizer in phase 6, coverage in phase 8), the learner adds it to their setup.
 
+## Fast track
+
+The fast track lets a learner skip what they already know, with evidence. Use it when the learner asks ("I know this", "Test me out of phase 3"), and offer it at the start of a phase when the levels in the profile match this table:
+
+| Phase | Offer the fast track when |
+|---|---|
+| 0 | T = 3 |
+| 1–4 | C = 3 |
+| 5, 8 | D = 3 |
+| 6, 7 | S = 3, and D = 2 or 3 |
+
+### Skip a topic
+
+1. Ask one or two check questions about the topic, at level 3: an explanation question and a code-reading question ("What does this print? Is there UB?"). Use the done criteria of the phase and the topic text as the source.
+2. If both answers are correct, add the topic to the "Known topics" table in `learner/progress.md`, with the date and the questions as evidence. Continue with the next topic.
+3. If an answer is partly correct, explain only the missing part. Then mark the topic as known.
+4. If an answer is wrong, teach the topic in the normal way.
+
+### Test out of a phase
+
+1. At the start of the phase, do the phase review first (`docs/mentor/assessment.md`, "Phase review", step 1): 3–5 questions from the done criteria. Add one practical item: a code-reading question, or a small task of 10–20 minutes from the topics of the phase.
+2. If the learner meets all done criteria that do not need code: the learner does only the exercises marked "(core)" and the project stage of the phase. Write "Fast track" and the date in the notes of the phase in `learner/progress.md`.
+3. If the learner fails some criteria: the learner does the topics and the exercises of those criteria, the exercises marked "(core)", and the project stage.
+4. The learner can also skip a core exercise if they show existing code of their own that does the same work (for example a CMake setup that they wrote at work). Review the code with the criteria of the exercise. Do not accept code that belongs to an employer and is confidential.
+5. At the end of the phase, do the normal phase review for the project stage and the core exercises.
+
+### Phase 0 for experienced learners (T = 3)
+
+1. The learner installs the toolchain and runs the checks (exercise 0.1).
+2. Replace exercises 0.2, 0.4, 0.6, and 0.10 with a short check: the learner explains the compilation model and a linker error, reads one template error, and sets a conditional breakpoint.
+3. The learner does the setup exercises 0.3, 0.5, 0.7, 0.8, and 0.9, because their result is the template of all later projects. If the learner already has an own setup, review it against the requirements table at the start of the phase 0 exercises. Exercise 0.9 is complete when the setup meets all requirements.
+
+### Rules
+
+- **Never skip a project stage.** Each stage builds on the previous one. The learner can go fast through a stage, but the stage must meet its acceptance criteria.
+- **The learner decides.** If the learner wants to skip a topic without a check, accept it. Write "skipped without check" in the "Known topics" table, and tell the learner that later phases use the topic.
+- **Reopen when a gap shows.** If a later exercise or review shows a gap in a known or skipped topic, tell the learner, teach the topic, and update the table. Write the gap in the "Observations" section of the profile.
+- **Old C++ habits:** a learner with C++ level 3 who learned C++ before C++11 does not test out of phase 2 (see the learning path in `docs/mentor/assessment.md`). They can still skip single topics after a check.
+- **Without a mentor:** the learner reads the done criteria of the phase first. If they can meet each criterion with evidence (an explanation in the notebook, or code), they do only the core exercises and the project stage.
+
 ## Code review (labs/)
 
 When the learner asks for a review of code in `labs/`:

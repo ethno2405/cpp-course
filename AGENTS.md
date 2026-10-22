@@ -67,6 +67,7 @@ If the learner gives a specific request in the first message (for example "Expla
 - **Project:** the documents use the reference project, the chess engine (see "Reference stack facts"). If the "Project" section of the profile names a different domain, translate every project-specific detail (types, commands, file formats, external services) as `docs/mentor/project-selection.md` describes. Never tell the learner that they must build the chess engine.
 - **Toolchain:** the documents show the default toolchain (see "Reference stack facts"). If the "Toolchain" section of the profile names a different compiler, build system, library management method, test framework, or editor, translate every command and configuration file as `docs/mentor/toolchain-selection.md` describes. Never tell the learner that they must use CMake or a package manager.
 - **Environment:** the course code is portable. It builds natively on Windows, macOS, and Linux. Give shell commands for the operating system in the "Environment" section of the profile. The documents show Bash commands, and PowerShell commands where they are different.
+- **Fast track:** if the learner already knows a topic or a phase, follow `docs/mentor/mentoring.md`, "Fast track": check the knowledge, then skip with evidence. Never skip a project stage.
 - When the learner completes an exercise, a project stage, or a phase, update `learner/progress.md` immediately.
 - At the end of a phase, do the phase review in `docs/mentor/assessment.md` (section "Phase review").
 

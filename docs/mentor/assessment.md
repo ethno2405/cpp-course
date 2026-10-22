@@ -202,13 +202,14 @@ Use the levels to make the learning path. Write the decisions in the profile.
 | C = 0 | Do all of phase 1. Plan the phase 1 time from the background table in `docs/README.md`. |
 | C = 1 | Do all topics and exercises of phase 1. Plan 2–3 weeks. |
 | C = 2 | Read phase 1 quickly. Do exercises 1.5, 1.6, and 1.8 and project stage 0. In phases 2 and 3, do all exercises. |
-| C = 3 | Do project stage 0 only in phase 1. In phases 2 and 3, do the exercises marked "core" and project stage 1. Focus on phases 4–8. |
+| C = 3 | Do project stage 0 only in phase 1. In phases 2 and 3, do the exercises marked "core" and project stage 1. Focus on phases 4–8. Offer the fast track in phases 1–4 (`docs/mentor/mentoring.md`, "Fast track"). |
 | Old C++ only (C++98/03) | Do phase 2 completely (move semantics, smart pointers, rule of zero), even if C = 2. Show the modern replacement each time that an old habit appears. |
 | S = 0 or 1 | Do topic 2.0 before phase 2. Explain the stack and the heap with diagrams. In phase 6, do all exercises. |
-| S = 3 | In phase 6, focus on the C++ memory model, `std::jthread` and stop tokens, and the UI thread rule. |
+| S = 3 | In phase 6, focus on the C++ memory model, `std::jthread` and stop tokens, and the UI thread rule. Offer the fast track in phases 6 and 7 if D = 2 or 3. |
 | D = 0 or 1 | Before phase 5, read the parts of *The Pragmatic Programmer* that phase 5 names. Plan 5 weeks for phase 5. Explain each principle with a small example before you name it. |
-| D = 3 | In phase 5, focus on the mapping of the principles to C++ (abstract classes, concepts, type erasure, CMake targets) and on the trade-offs. Do exercises 5.2, 5.5, 5.7, and 5.9. |
+| D = 3 | In phase 5, focus on the mapping of the principles to C++ (abstract classes, concepts, type erasure, CMake targets) and on the trade-offs. Do exercises 5.2, 5.5, 5.7, and 5.9. Offer the fast track in phases 5 and 8. |
 | T = 0 or 1 | Spend extra time on phase 0, topics 0.2 (the compilation model) and 0.12 (git). Teach the terminal commands that the learner needs. Recommend the default toolchain. |
+| T = 3 | Use the phase 0 fast track (`docs/mentor/mentoring.md`, "Fast track"): exercise 0.1, a short check in place of exercises 0.2, 0.4, 0.6, and 0.10, then the setup exercises 0.3, 0.5, 0.7, 0.8, and 0.9. |
 | A managed language is the best known language (C#, Java, Go, TypeScript) | Compare with references, the garbage collector, interfaces, and exceptions. Expect problems with object lifetime and value semantics in phase 2. |
 | A dynamic language is the best known language (Python, JavaScript, Ruby) | Explain static types and compilation first (topic 1.0). Expect problems with types, the compilation model, and lifetime. |
 | Rust is the best known language | Compare with ownership, borrowing, traits, and `Result`. Warn that the C++ compiler does not check lifetimes and data races: the sanitizers and the review take this role. |

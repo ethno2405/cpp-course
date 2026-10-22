@@ -33,6 +33,14 @@ The AI mentor updates this file during each session. The file is in `learner/`. 
 |---|---|---|
 | | | |
 
+## Known topics (fast track)
+
+Topics and exercises that the learner skipped because they already know them (see `docs/mentor/mentoring.md`, "Fast track").
+
+| Topic or exercise | Date | Evidence |
+|---|---|---|
+| | | <the check questions and the result, "own code reviewed", or "skipped without check"> |
+
 ## Main project stages
 
 The stages of the chess engine, or of the domain in the "Project" section of the profile.
