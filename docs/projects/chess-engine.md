@@ -209,7 +209,7 @@ Check the values against the wiki before you use them. If your count is wrong, u
 
 **Acceptance criteria**
 
-- [ ] `chess_core` links no third-party library and includes no header for files, streams, threads, or the console, except `<iosfwd>` if a port needs it. The build files and `cmake --graphviz` prove the dependency direction.
+- [ ] `chess_core` links no third-party library and includes no header for files, streams, the console, the network, or a user interface, except `<iosfwd>` if a port needs it. (Threads are not I/O: stage 4 adds the multi-threaded search to the core.) The build files and `cmake --graphviz` prove the dependency direction.
 - [ ] The commit that adds the piece-square evaluator does not change `chess_core`.
 - [ ] The use cases have tests that use only fakes. No core test touches the file system.
 - [ ] The contract tests pass for both game stores.
@@ -224,6 +224,7 @@ Check the values against the wiki before you use them. If your count is wrong, u
 
 - **Iterative deepening:** search depth 1, 2, 3, ... until a limit stops the search. Send a `SearchInfo` to the observer after each depth.
 - **Time control:** `go wtime <ms> btime <ms> winc <ms> binc <ms> [movestogo <n>]`, `go movetime <ms>`, and `go infinite`. A simple rule is enough: use about 1/30 of the remaining time plus the increment.
+- **Where the code goes:** the search threads, the transposition table, and the time control are in `chess_core`. Threads are not I/O, so the core can use `<thread>`, `<atomic>`, and `<stop_token>`. The core still has no files, console, network, or user interface. It gets the time from the `Clock` port.
 - **Search on a worker thread:** the UCI loop stays responsive while the engine searches. `stop` ends the search within 50 ms, and the engine still sends `bestmove`. Use `std::jthread` and `std::stop_token`.
 - **Transposition table:** a fixed-size hash table (UCI option `Hash` in MB) with entries for the Zobrist key, the depth, the score, the bound type, and the best move.
 - **Lazy SMP:** UCI option `Threads`. All threads search the same position and share the transposition table. The table access must be free of data races (for example, store each entry as atomic words, and check the key; or use one lock for each group of entries; write the decision in an ADR).

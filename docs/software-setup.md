@@ -20,7 +20,7 @@ You need five things:
 |---|---|---|
 | Windows | MSVC (Visual Studio 2022 17.10 or newer, or Visual Studio 2026) | clang-cl (Clang with an MSVC-compatible interface), MinGW-w64 GCC through MSYS2, GCC or Clang in WSL2 |
 | macOS | Apple Clang from the Xcode command-line tools | LLVM Clang from Homebrew, GCC from Homebrew |
-| Linux | GCC 14 or newer | Clang 18 or newer |
+| Linux | GCC 14 or newer | Clang 18 or newer with libstdc++ 14, or Clang 20 or newer with libc++ |
 
 If you do not know what to select, use the defaults. You can change the compiler and the editor later at a low cost. A change of the build system costs more after phase 4.
 
@@ -54,7 +54,7 @@ brew install cmake ninja llvm git
 
 - `xcode-select` installs Apple Clang, LLDB, and the system headers.
 - The Homebrew `llvm` package gives `clangd`, `clang-format`, `clang-tidy`, and a newer Clang. Homebrew does not put it on the `PATH` by default: `brew info llvm` tells you the path. Add only the tools that you need to the `PATH`, or call them with the full path.
-- If the check program in section 4 fails with Apple Clang, use the Homebrew Clang as the compiler: `cmake --preset dev -DCMAKE_CXX_COMPILER="$(brew --prefix llvm)/bin/clang++"`.
+- If the check program in section 4 fails with Apple Clang, use the Homebrew Clang (version 20 or newer) as the compiler: `cmake --preset dev -DCMAKE_CXX_COMPILER="$(brew --prefix llvm)/bin/clang++"`.
 
 ### Linux
 
@@ -156,7 +156,7 @@ Then the compiler:
 | Compiler | Command | Minimum |
 |---|---|---|
 | GCC | `g++ --version` | 14 |
-| Clang | `clang++ --version` | 18 |
+| Clang | `clang++ --version` | 18 with libstdc++ 14; 20 with libc++ |
 | MSVC | `cl` (without arguments) | 19.40 |
 | Apple Clang | `clang++ --version` | The check program decides |
 
@@ -239,8 +239,8 @@ Compile and run it:
 The last line of the output must be `OK`.
 
 - MSVC: use `/std:c++latest`. Some versions also accept `/std:c++23preview`. CMake selects the correct flag for `CMAKE_CXX_STANDARD 23`.
-- Clang on Linux uses libstdc++ by default. If the check fails, install a newer libstdc++ (the GCC 14 package), or use libc++ with `-stdlib=libc++`.
-- If `<print>` or `std::jthread` is missing with Clang and libc++, the libc++ version is too old. Use a newer Clang.
+- Clang on Linux uses libstdc++ by default. If the check fails, install a newer libstdc++ (the GCC 14 package), or use libc++ 20 or newer with `-stdlib=libc++`.
+- If `<print>` or `std::jthread` is missing with Clang and libc++, the libc++ version is too old. libc++ 18 and 19 hide `std::jthread` and `<stop_token>` behind the flag `-fexperimental-library`. Use Clang and libc++ 20 or newer.
 
 ### The debugger
 
@@ -259,7 +259,8 @@ The course uses only the features that all supported compilers have. The minimum
 |---|---|---|---|---|---|
 | Concepts, ranges, `std::span`, `<=>`, designated initializers | C++20 | 10+ | 16+ | 19.29+ | Yes |
 | `std::format` | C++20 | 13+ | 17+ | 19.29+ | Yes |
-| `std::jthread`, `std::stop_token` | C++20 | 10+ | 18+ | 19.28+ | Yes |
+| `std::jthread`, `std::stop_token` | C++20 | 10+ | 20+ (18–19 only with `-fexperimental-library`) | 19.28+ | Yes |
+| Floating-point `std::from_chars` | C++17 | 11+ | 20+ | 19.24+ | Yes |
 | `<bit>`: `std::popcount`, `std::countr_zero` | C++20 | 10+ | 9+ | 19.25+ | Yes |
 | `std::expected` | C++23 | 12+ | 16+ | 19.33+ | Yes |
 | Monadic `std::optional` (`and_then`, `transform`, `or_else`) | C++23 | 12+ | 14+ | 19.32+ | Yes |
@@ -277,6 +278,8 @@ The course uses only the features that all supported compilers have. The minimum
 | Parallel algorithms (execution policies) | C++17 | 9+ (needs Intel TBB) | Check | 19.14+ | No. Optional in phase 6. |
 
 "Check" means that support is new, partial, or different in each version. Read the compiler support page before you use the feature.
+
+The column "Clang with libc++" gives the libc++ version. With Clang and libstdc++ (the default on Linux), the library features follow the GCC column, and the language features (deducing `this`) need Clang 18.
 
 ## 6. Warnings
 

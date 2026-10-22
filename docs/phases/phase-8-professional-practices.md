@@ -61,7 +61,8 @@ rc::check("FEN round trip", [](std::vector<std::uint8_t> choices) {
 
 ```cpp
 extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size) {
-    const std::string_view text{reinterpret_cast<const char*>(data), size};
+    // libFuzzer gives raw bytes. A char can refer to any byte, so this view is correct.
+    const std::string_view text{reinterpret_cast<const char*>(data), size};  // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
     (void)parse_fen(text);   // must never crash, never show UB, never throw
     return 0;
 }

@@ -231,7 +231,14 @@ Skip this topic if you use git every day.
 
 In this phase, you build the project setup of the course yourself, one part in each exercise: the build file, the library layout, the C++23 settings, the warning set, format and lint, the sanitizers, a test framework, and presets. At the end (exercise 0.9), your phase 0 project is your template. You copy its setup to each new project of the course, and you improve it when you learn more.
 
-Make the project `labs/phase-0-tools/` with a root build file that adds one subdirectory for each exercise (CMake: `add_subdirectory(ex-0-03-first-project)`). The commands below use CMake. If you use a different build system, the [build systems topic](../topics/build-systems.md) and your mentor translate them.
+Make the project `labs/phase-0-tools/` with one root build file (CMake: `CMakeLists.txt`) and one subdirectory for each exercise:
+
+- The **root build file** holds the settings for all exercises: `project()`, the C++ standard, the includes of your `cmake/` modules, and `enable_testing()`. It adds each exercise with `add_subdirectory(ex-0-03-first-project)`.
+- The build file of an **exercise subdirectory** holds only the targets of that exercise.
+- You configure, build, and test from the root, into one build directory.
+- Two exercises are not in the root build file: exercise 0.2 (it has no build file), and exercise 0.8b (a separate small project, so that you can configure it alone).
+
+The commands below use CMake. If you use a different build system, the [build systems topic](../topics/build-systems.md) and your mentor translate them.
 
 The project setup is complete when it meets these requirements. Exercise 0.9 checks them.
 
@@ -270,16 +277,16 @@ Do this exercise without a build system, so that you see what a build system doe
 
 Do each step, and do its check before you continue.
 
-1. **One executable.** In `ex-0-03-first-project/`, write a build file with one executable target from `main.cpp`. Configure into a separate build directory, build, and run it.
+1. **One executable.** Write the root build file with `cmake_minimum_required` and `project()`. In `ex-0-03-first-project/`, write a build file with one executable target from `main.cpp`, and add the subdirectory to the root build file. Configure the root into a separate build directory, build, and run the executable.
    - Check: `git status` shows no generated file. All generated files are in the build directory.
 2. **A library and an executable.** Move `make_greeting` into a library target `greeting`: the header in `include/greeting/greeting.hpp`, the source in `src/greeting.cpp`. The executable in `app/main.cpp` links the library and includes `<greeting/greeting.hpp>`. The include directory is a usage requirement of the library (`target_include_directories(greeting PUBLIC include)`), not a global setting.
    - Check: the executable compiles without its own include directory setting.
-3. **C++23 without extensions.** Set the standard to C++23, make it required, and turn off the compiler extensions (CMake: `CMAKE_CXX_STANDARD`, `CMAKE_CXX_STANDARD_REQUIRED`, `CMAKE_CXX_EXTENSIONS`).
+3. **C++23 without extensions.** In the root build file, set the standard to C++23, make it required, and turn off the compiler extensions (CMake: `CMAKE_CXX_STANDARD`, `CMAKE_CXX_STANDARD_REQUIRED`, `CMAKE_CXX_EXTENSIONS`). Set them before `add_subdirectory`, so that all exercises get them.
    - Check: change `make_greeting` to return `std::expected<std::string, GreetingError>` (an empty name is an error). It compiles.
-4. **The compilation database.** Make the build write `compile_commands.json` (CMake: `CMAKE_EXPORT_COMPILE_COMMANDS`, with the Ninja or Makefile generator). Configure clangd or your IDE to use it.
+4. **The compilation database.** In the root build file, make the build write `compile_commands.json` (CMake: `CMAKE_EXPORT_COMPILE_COMMANDS`, with the Ninja or Makefile generator). Configure clangd or your IDE to use it.
    - Check: in the editor, go to definition from `app/main.cpp` goes into `src/greeting.cpp`, and the editor shows no false errors.
 5. **Use it.** Read a name from the first command-line argument, and print a usage message to stderr and return a non-zero exit code if the argument is missing or the name is not valid.
-6. **Build types.** Build a `Debug` and a `Release` configuration in two build directories. Compare the size of the executables.
+6. **Build types.** Build a `Debug` and a `Release` configuration of the root project in two build directories. Compare the size of the executables.
 
 ### Exercise 0.4: Read compiler and linker errors (core)
 
@@ -329,7 +336,9 @@ std::println("{}", first);
      }
      ```
 
-3. Copy this function into `ex-0-05-lint/`, call it from `main`, and fix every warning:
+3. Copy this function into `ex-0-05-lint/`, and call it from `main`. Build it, and read every warning. **Do not fix it yet:** step 5 runs clang-tidy on the same code.
+
+   To see all warnings without a stop of the build, configure a second build directory with `-DCOURSE_WARNINGS_AS_ERRORS=OFF`.
 
    ```cpp
    double average(std::vector<double> values) {
@@ -345,7 +354,8 @@ std::println("{}", first);
 4. **Format.** Write a `.clang-format` file in the project root. Start from a predefined style (`BasedOnStyle: LLVM`, `Google`, `Microsoft`, or another one), and change only what you have a reason for (for example `IndentWidth` and `ColumnLimit`). Read the "Clang-Format Style Options" page for each option that you set. Configure your editor to format on save.
    - Check: `clang-format --dry-run --Werror` on a file with a wrong indentation fails. After `clang-format -i`, it passes.
 5. **Lint.** Write a `.clang-tidy` file. Enable the check groups `bugprone-*`, `cppcoreguidelines-*`, `modernize-*`, `performance-*`, and `readability-*` (and more if you want). Run clang-tidy with the compilation database (`clang-tidy -p <build directory> <file>`). For each check that you disable, write the reason in a comment in the file. Limit the analysis to your own headers with `HeaderFilterRegex`.
-   - Check: run clang-tidy on the `average` function from step 3 before your fixes. It must report at least `performance-unnecessary-value-param` and a `modernize-` or `readability-` check. Read the documentation of each check that it reports.
+   - Check: run clang-tidy on the `average` function from step 3. It must report at least `performance-unnecessary-value-param` and a `modernize-` or `readability-` check. Read the documentation of each check that it reports.
+6. **Fix.** Fix every warning and every clang-tidy finding in `average`. Build again with warnings as errors, and run clang-tidy again. Both must report nothing.
 
 ### Exercise 0.6: Debugger
 
@@ -364,9 +374,11 @@ std::println("{}", first);
 3. Write a small program in `ex-0-07-sanitizers/` for each error. Run each one in a debug build without sanitizers, and then with `address;undefined`. Write the result of each run in your notebook.
    1. Read the element after the end of a `std::vector` with `operator[]` (the last fragment of exercise 0.4).
    2. Keep a reference to an element of a `std::vector`, call `push_back` many times, then read through the reference.
-   3. Return a reference to a local variable from a function, and read it in the caller.
-   4. Shift `1` to the left by 40 bits in an `int`.
+   3. Return a reference to a local variable from a function, and read it in the caller. With GCC and Clang, AddressSanitizer finds this error only when you set the environment variable `ASAN_OPTIONS=detect_stack_use_after_return=1`. MSVC needs the extra compile option `/fsanitize-address-use-after-return` and the same environment variable.
+   4. Shift `1` to the left in an `int`. Read the shift count from the command line, and run the program with 40.
    5. `factorial(20)` from exercise 0.6.
+
+   These programs have defects on purpose. The warning set finds some of them at compile time (for example item 3, and item 4 if the shift count is a constant). That is a good result: write the warning in your notebook. To run such a program anyway, build it in a second build directory that you configure with `-DCOURSE_WARNINGS_AS_ERRORS=OFF` and the sanitizers (`-DCOURSE_SANITIZERS="address;undefined"`).
 4. Which errors does the build without the sanitizers show? Which ones does each sanitizer show? Which ones does MSVC show (if you use it)?
 
 ### Exercise 0.8: Add a library without a package manager (core)
@@ -380,7 +392,7 @@ std::println("{}", first);
    5. Make an `INTERFACE` target `doctest::doctest` with a `SYSTEM` include directory, so that warnings in the header do not stop your build.
    6. Write tests with doctest. Register the test executable with the test runner (CMake: `enable_testing()` and `add_test`). Run them with `ctest`.
    - Check: a test that fails makes `ctest` return a non-zero exit code.
-3. **Add the same library with `FetchContent`** (or the equivalent of your build system) in `ex-0-08b-fetchcontent/`, pinned with `URL` and `URL_HASH`. Configure it. Change one character of the hash, and configure again in a new build directory. Read the error.
+3. **Add the same library with `FetchContent`** (or the equivalent of your build system) in `ex-0-08b-fetchcontent/`, pinned with `URL` and `URL_HASH`. This is a separate small project with its own `project()` and `enable_testing()`: do not add it to the root build file. Configure it alone. Change one character of the hash, and configure again in a new build directory. Read the error.
 4. Write in your notebook: which method would you use in a team, and why? What does each method need when you work offline?
 5. Optional: add the same library with vcpkg or Conan. Compare the steps.
 6. Add tests with doctest to exercises 0.3 and 0.6 (the `factorial` limits: 0, 1, 20, 21).
@@ -397,7 +409,7 @@ std::println("{}", first);
    | `tsan` | Debug | `thread` | Concurrent code (phase 6). Only on Linux and macOS: use a `condition` on `${hostSystemName}`. |
 
    Add build presets and test presets for each one. In the test presets, show the output of failed tests (`"output": {"outputOnFailure": true}`), and fail if no test exists (`"execution": {"noTestsAction": "error"}`).
-   - Check: delete all build directories. `cmake --preset dev`, `cmake --build --preset dev`, and `ctest --preset dev` build and test all exercises. Change the clangd setting to the `dev` build directory.
+   - Check: delete all build directories. `cmake --preset dev`, `cmake --build --preset dev`, and `ctest --preset dev` build and test all exercises in the root build file. Change the clangd setting to the `dev` build directory.
 2. **Local settings** (for example a compiler path or a local library prefix) go to `CMakeUserPresets.json`, which git ignores. Explain in your notebook why they do not go to `CMakePresets.json`.
 3. **README.** Write `labs/phase-0-tools/README.md` with the commands to configure, build, test, format, and lint.
 4. **Check the requirements** in the table at the start of the exercises. Ask the mentor for a review of your setup.

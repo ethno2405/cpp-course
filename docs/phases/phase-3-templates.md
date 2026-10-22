@@ -85,11 +85,13 @@ concept Scorable = requires(const T& t) {
     { t.score() } -> std::convertible_to<int>;
 };
 
-// Three equivalent forms:
-template <Scorable T> int total(const std::vector<T>& items);
-template <typename T> requires Scorable<T> int total(const std::vector<T>& items);
-int total(const std::vector<Scorable auto>& items);   // abbreviated form
+// Three equivalent forms. Use one of them.
+template <Scorable T> int bonus(const T& item);
+template <typename T> requires Scorable<T> int bonus(const T& item);
+int bonus(const Scorable auto& item);   // abbreviated form
 ```
+
+- The abbreviated form `Scorable auto` is only permitted as the type of the parameter itself (with `const` and `&`). It cannot be a template argument: `std::vector<Scorable auto>` is not valid C++. For a container, use the first or the second form: `template <Scorable T> int total(const std::vector<T>& items);`.
 
 - The standard library has many concepts: `std::integral`, `std::floating_point`, `std::same_as`, `std::convertible_to`, `std::equality_comparable`, `std::totally_ordered`, `std::invocable`, `std::predicate`, and the range concepts (`std::ranges::range`, `std::ranges::random_access_range`).
 - A type satisfies a concept if it has the required operations. The type does not declare it (unlike a Java interface or a Rust trait).
@@ -155,7 +157,7 @@ auto twice = [](auto x) { return x + x; };                  // generic lambda
 - A lambda is an object of a class that the compiler makes, with an `operator()`. The captures are its data members.
 - **Capture by value** copies the variable when the lambda is made. **Capture by reference** stores a reference: if the lambda runs after the variable ended, the reference dangles. This is a common error with callbacks and threads.
 - Do not use `[&]` or `[=]` for lambdas that leave the scope (stored callbacks, threads). Name each capture.
-- `[=]` in a member function captures `this` (a pointer), not a copy of the object. Write `[this]` or `[*this]` to say what you mean.
+- `[=]` in a member function captures `this` (a pointer), not a copy of the object. C++20 deprecates this implicit capture of `this`. Write `[this]` or `[*this]` to say what you mean.
 - `std::function<int(int)>` holds any callable object with the given signature. It costs an indirect call and maybe a heap allocation. Use a template parameter (`std::invocable<int> auto f`) when the callable is used only during the call.
 
 ### 3.7 Iterators and algorithms
@@ -181,7 +183,11 @@ std::vector<int> grades = passed | std::ranges::to<std::vector>();   // C++23
 - Common views: `std::views::filter`, `transform`, `take`, `drop`, `reverse`, `iota` (a sequence of numbers), `split`, `keys`, `values`, `join`.
 - `std::ranges::to<Container>()` (C++23) makes a container from a range.
 - Some C++23 views (`zip`, `enumerate`, `chunk`, `slide`) are not in all supported compilers yet. Check the support table in [../software-setup.md](../software-setup.md) before you use them.
-- Do not store a view of a temporary: `auto v = make_vector() | std::views::filter(f);` does not compile for a temporary in most cases (the library protects you), but views of `std::string_view` and other borrowed ranges can still dangle.
+- **Views and lifetimes:**
+  - A view of a named container (an lvalue) refers to the container. The view dangles when the container ends.
+  - A view of a temporary container (`make_vector() | std::views::filter(f)`) takes ownership of the container (an owning view, C++23, also applied to C++20 in current compilers). This is safe.
+  - A view of a `std::string_view`, a `std::span`, or another view never owns. It dangles when the original data ends.
+  - A range algorithm that gets a temporary container and returns an iterator (`std::ranges::find(make_vector(), 3)`) returns `std::ranges::dangling` in place of an iterator. A use of it does not compile. The library protects you here.
 
 ### 3.9 Compile-time computation
 

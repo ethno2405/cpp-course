@@ -199,7 +199,7 @@ From the C++ Core Guidelines, section "I", and common practice:
 
 - `std::filesystem::path` represents a path in a portable way. Use it in place of `std::string` for paths. Functions: `exists`, `is_regular_file`, `create_directories`, `directory_iterator`, `rename`, `remove`, `file_size`.
 - `std::ifstream` and `std::ofstream` read and write files. Check the stream state after you open it and after each operation: `if (!in) { ... }`. Streams do not throw by default.
-- **Save a file safely:** write to a temporary file in the same directory, close it, check for errors, then rename it to the final name. A rename in the same file system replaces the old file in one step. If the program stops in the middle, the old file is still complete.
+- **Save a file safely:** write to a temporary file in the same directory, close it, check for errors, then rename it to the final name. On Linux and macOS (POSIX), a rename in the same file system replaces the old file in one atomic step. If the program stops in the middle, the old file is still complete. On Windows, `std::filesystem::rename` also replaces the old file, but Windows does not guarantee the same atomic step; read the documentation of `MoveFileEx` and `ReplaceFile` if you need it.
 - **Text and binary mode:** on Windows, text mode converts `\n` to `\r\n`. Use binary mode (`std::ios::binary`) for data that is not text, and when you need the exact bytes.
 - **Parse numbers** with `std::from_chars` (fast, no exceptions, no locale): it returns a pointer to the first unused character and an error code. Avoid `std::stoi` for untrusted input (it throws) and `atoi` (no error reporting).
 

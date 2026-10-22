@@ -162,6 +162,8 @@ private:
 **`enum class`** is a type with a fixed set of named values:
 
 ```cpp
+#include <utility>   // std::unreachable
+
 enum class Color { white, black };
 
 Color opposite(Color c) {
@@ -331,7 +333,7 @@ Make the project `labs/phase-1-basics/`, with the same configuration files as in
 
 ### Exercise 1.1: Temperature converter
 
-Write `celsius_to_fahrenheit` and `fahrenheit_to_celsius`. Write a program that reads a value and a unit from the command line, for example `convert 100 C`. Test the freezing point, the boiling point, and -40. Use `std::from_chars` to parse the number, and print an error for invalid input.
+Write `celsius_to_fahrenheit` and `fahrenheit_to_celsius`. Write a program that reads a value and a unit from the command line, for example `convert 100 C`. Test the freezing point, the boiling point, and -40. Use `std::from_chars` to parse the number, and print an error for invalid input. (Floating-point `std::from_chars` needs GCC 11, MSVC, or libc++ 20 or newer. See the support table in [../software-setup.md](../software-setup.md).)
 
 ### Exercise 1.2: FizzBuzz with `switch`
 

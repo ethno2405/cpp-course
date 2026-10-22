@@ -237,7 +237,7 @@ Write a URL shortener API (reuse the core of exercise 5.5): `POST /links` (body 
 
 1. Write the RAII wrappers `Connection`, `Statement`, and `Transaction` with `std::expected` errors.
 2. Write migrations with `PRAGMA user_version`. Test: a new database gets all migrations; a database at version 1 gets only the later ones.
-3. Implement the `LinkStore` of the URL shortener with SQLite. Run the contract tests from exercise 5.3 or 5.5 against it.
+3. Implement the `LinkStore` of the URL shortener with SQLite. Write contract tests for the `LinkStore` port, as in exercise 5.3, and run them against the memory store of exercise 5.5 and the SQLite store.
 4. Show SQL injection with a version that concatenates the input into the SQL. Fix it with bound parameters. Keep the test.
 5. Write a test where an error in the middle of a transaction leaves the database unchanged.
 

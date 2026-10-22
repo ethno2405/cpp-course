@@ -208,7 +208,7 @@ Use the levels to make the learning path. Write the decisions in the profile.
 | S = 3 | In phase 6, focus on the C++ memory model, `std::jthread` and stop tokens, and the UI thread rule. |
 | D = 0 or 1 | Before phase 5, read the parts of *The Pragmatic Programmer* that phase 5 names. Plan 5 weeks for phase 5. Explain each principle with a small example before you name it. |
 | D = 3 | In phase 5, focus on the mapping of the principles to C++ (abstract classes, concepts, type erasure, CMake targets) and on the trade-offs. Do exercises 5.2, 5.5, 5.7, and 5.9. |
-| T = 0 or 1 | Spend extra time on phase 0, topics 0.2 (the compilation model) and 0.10 (git). Teach the terminal commands that the learner needs. Recommend the default toolchain. |
+| T = 0 or 1 | Spend extra time on phase 0, topics 0.2 (the compilation model) and 0.12 (git). Teach the terminal commands that the learner needs. Recommend the default toolchain. |
 | A managed language is the best known language (C#, Java, Go, TypeScript) | Compare with references, the garbage collector, interfaces, and exceptions. Expect problems with object lifetime and value semantics in phase 2. |
 | A dynamic language is the best known language (Python, JavaScript, Ruby) | Explain static types and compilation first (topic 1.0). Expect problems with types, the compilation model, and lifetime. |
 | Rust is the best known language | Compare with ownership, borrowing, traits, and `Result`. Warn that the C++ compiler does not check lifetimes and data races: the sanitizers and the review take this role. |

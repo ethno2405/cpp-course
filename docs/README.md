@@ -40,7 +40,7 @@ C++ has many compilers, build systems, editors, and methods to get libraries. Th
 | Item | Default in the documents | Alternatives |
 |---|---|---|
 | Standard | C++23 | — |
-| Compiler | GCC 14+, Clang 18+, or MSVC 19.40+ (the native compiler of your operating system) | clang-cl, MinGW-w64 |
+| Compiler | GCC 14+, Clang 18+ with libstdc++ (Clang 20+ with libc++), or MSVC 19.40+ (the native compiler of your operating system) | clang-cl, MinGW-w64 |
 | Build system | CMake with presets | Meson, xmake, Bazel, Make. See [topics/build-systems.md](topics/build-systems.md). |
 | Libraries | Manual management: vendored sources and pinned downloads | vcpkg, Conan. See [topics/external-libraries.md](topics/external-libraries.md). |
 | Tests | doctest | Catch2, GoogleTest |

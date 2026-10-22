@@ -18,7 +18,7 @@ For learners who want a stronger chess engine. Read the Chess Programming Wiki f
 
 - **Test method first:** a change is better only if a match proves it. Use self-play with a tool such as fastchess or cutechess-cli, and the sequential probability ratio test (SPRT) to decide when a result is significant. Without this, most "improvements" are noise.
 - **Move generation:** magic bitboards for sliding pieces; pseudo-legal generation with a legality check.
-- **Search:** better move ordering (the transposition table move, MVV-LVA for captures, killer moves, the history heuristic), principal variation search, null-move pruning, late move reductions, aspiration windows, check extensions.
+- **Search:** better move ordering (the transposition table move, MVV-LVA (most valuable victim, least valuable attacker) for captures, killer moves, the history heuristic), principal variation search, null-move pruning, late move reductions, aspiration windows, check extensions.
 - **Evaluation:** tapered evaluation (middle game and end game), pawn structure, king safety, mobility; tuning of the parameters with a large set of positions (Texel tuning).
 - **Neural network evaluation:** NNUE (efficiently updatable neural network) is the evaluation of most strong engines today. Start with the documents of the Stockfish project and of smaller open-source engines.
 - **Exercise:** add three search improvements, one at a time. Prove each one with SPRT. Record the results in `docs/strength.md`.
