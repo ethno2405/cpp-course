@@ -1,0 +1,46 @@
+# The clang-tidy checks of the course.
+# Each disabled check has a reason. Do not disable more checks without a reason.
+Checks: >
+  bugprone-*,
+  cert-*,
+  clang-analyzer-*,
+  concurrency-*,
+  cppcoreguidelines-*,
+  misc-*,
+  modernize-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -bugprone-easily-swappable-parameters,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -readability-magic-numbers,
+  -modernize-use-trailing-return-type,
+  -readability-identifier-length,
+  -misc-non-private-member-variables-in-classes,
+  -cppcoreguidelines-avoid-do-while
+# Reasons:
+# - easily-swappable-parameters: too many findings in small exercises. Use strong types in place of it.
+# - magic numbers: chess code has many fixed numbers (8 files, 64 squares). Name them where it helps.
+# - trailing return type: a style choice. The course uses the normal function syntax.
+# - identifier length: short names like "sq" and "to" are clear in chess code.
+# - non-private members: a plain struct with public data is correct when it has no invariant.
+# - do-while: the doctest macros use it.
+
+# Analyze only the headers of the project, not the third-party headers.
+HeaderFilterRegex: '.*/(include|src|app|tests)/.*'
+
+CheckOptions:
+  - key: readability-identifier-naming.NamespaceCase
+    value: lower_case
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  - key: readability-identifier-naming.FunctionCase
+    value: lower_case
+  - key: readability-identifier-naming.VariableCase
+    value: lower_case
+  - key: readability-identifier-naming.EnumConstantCase
+    value: lower_case
+  - key: readability-identifier-naming.PrivateMemberSuffix
+    value: _

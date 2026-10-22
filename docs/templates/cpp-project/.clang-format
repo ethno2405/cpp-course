@@ -1,0 +1,19 @@
+# The format of the course. Change it if your team has a different style,
+# but use one format for the whole project.
+BasedOnStyle: LLVM
+IndentWidth: 4
+ColumnLimit: 100
+PointerAlignment: Left
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+BreakTemplateDeclarations: Yes
+IncludeBlocks: Regroup
+IncludeCategories:
+  # The header of the project first, then other libraries, then the standard library.
+  - Regex: '^"'
+    Priority: 1
+  - Regex: '^<[a-z_]+/'
+    Priority: 2
+  - Regex: '^<'
+    Priority: 3
