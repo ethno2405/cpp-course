@@ -38,7 +38,11 @@ Compiled code has an **ABI** (application binary interface). Two pieces of compi
 1. **Get the code from the official source.** Use the release page of the project, its official website, or its official repository. Check the exact name: attackers publish packages and repositories with names that are similar to popular ones.
 2. **Pin an exact version.** Use a release tag and its archive, or a full commit hash. Never use a branch name like `master` or `main`: the content can change without notice.
 3. **Check the integrity.** Compute the SHA-256 hash of each downloaded archive or file, and write it in the dependency list. With `FetchContent`, put the hash in `URL_HASH`, so that CMake checks it at each download. If the project publishes hashes or signatures (SQLite publishes SHA3-256 hashes on its download page), compare them.
-4. **Keep one dependency list.** Write each library in `third_party/README.md`: name, version, source URL, hash, license, method, and patches. The [starter project](../templates/cpp-project/third_party/README.md) shows the format. A reviewer must see every dependency in one file.
+4. **Keep one dependency list.** Write each library in `third_party/README.md`: name, version, source URL, hash, license, method, and patches. A reviewer must see every dependency in one file. Example of one row:
+
+   | Library | Version | Source | SHA-256 | License | Method | Patches |
+   |---|---|---|---|---|---|---|
+   | doctest | 2.4.11 | github.com/doctest/doctest, tag `v2.4.11`, file `doctest/doctest.h` | `<the hash that you computed>` | MIT (`third_party/doctest/LICENSE.txt`) | Vendored header | None |
 5. **Keep the license.** Copy the license file of each library next to its code. Check that the license is compatible with your use before you add the library (see "Licenses").
 6. **Do not change vendored code.** If you must change it, put the change in a patch file in `third_party/patches/`, apply it in the build or with a script, and list it in the dependency list. Then an update does not lose your change.
 7. **Build dependencies with your toolchain.** Use the same compiler, C++ standard, standard library, build type, and runtime library as your project. Add the library as a subdirectory, or build it from source with the same toolchain.

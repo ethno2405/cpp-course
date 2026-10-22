@@ -107,7 +107,7 @@ The course teaches software design in every phase, not only in phase 5.
 | [projects/](projects/) | Project specifications and task documents |
 | [topics/](topics/) | Detailed explanations of specific topics |
 | [mentor/](mentor/) | Instructions for the AI mentor: assessment, teaching, project selection, toolchain selection |
-| [templates/](templates/) | Templates for new documents, the learner profile, progress, and a starter C++ project |
+| [templates/](templates/) | Templates for new documents, the learner profile, and progress |
 
 ## General advice
 

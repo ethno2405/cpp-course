@@ -242,16 +242,14 @@ The last line of the output must be `OK`.
 - Clang on Linux uses libstdc++ by default. If the check fails, install a newer libstdc++ (the GCC 14 package), or use libc++ with `-stdlib=libc++`.
 - If `<print>` or `std::jthread` is missing with Clang and libc++, the libc++ version is too old. Use a newer Clang.
 
-### The starter project
-
-Copy [templates/cpp-project/](templates/cpp-project/) to a scratch directory outside the course repository. Follow its `README.md` to configure, build, and test it. The tests must pass. This proves that the build system, the warning set, and the sanitizers work.
-
 ### The debugger
 
-1. Open the starter project in your editor.
-2. Set a breakpoint in `main`.
-3. Start the debugger with the debug build.
+1. Compile the check program with debug information: add `-g` (GCC, Clang) or `/Zi` (MSVC) to the command above.
+2. Open the scratch directory in your editor, and set a breakpoint on the first line of `main`.
+3. Start the debugger on the executable (in VS Code: a launch configuration of the C/C++ or CodeLLDB extension; your mentor or the extension documentation shows how).
 4. The program must stop on the breakpoint, and you must see the local variables.
+
+You check the build system in phase 0, exercise 0.3, when you make your first project.
 
 ## 5. C++23 support
 
@@ -282,7 +280,7 @@ The course uses only the features that all supported compilers have. The minimum
 
 ## 6. Warnings
 
-The course treats warnings as errors. Use this warning set in every course project. The [starter project](templates/cpp-project/cmake/CompilerWarnings.cmake) applies it.
+The course treats warnings as errors. Use this warning set in every course project. In phase 0, exercise 0.5, you write the build code that applies it.
 
 | Purpose | GCC and Clang | MSVC |
 |---|---|---|
@@ -298,7 +296,7 @@ The course treats warnings as errors. Use this warning set in every course proje
 
 GCC only: `-Wduplicated-cond -Wduplicated-branches -Wlogical-op`. MSVC also needs `/utf-8` (source and execution character set) and `/Zc:__cplusplus` (a correct `__cplusplus` value).
 
-MSVC marks some portable standard C functions (for example `std::fopen` and `std::getenv`) as deprecated with warning C4996, and recommends Microsoft-only replacements. The course code stays portable: define `_CRT_SECURE_NO_WARNINGS` for MSVC builds. The starter project does this.
+MSVC marks some portable standard C functions (for example `std::fopen` and `std::getenv`) as deprecated with warning C4996, and recommends Microsoft-only replacements. The course code stays portable: define `_CRT_SECURE_NO_WARNINGS` for MSVC builds.
 
 Do not disable a warning for the whole project. If a warning is wrong for one line, disable it for that line only, and write a comment that explains why.
 
@@ -312,8 +310,8 @@ A sanitizer adds checks to the program at compile time. The checks find errors a
 | UndefinedBehaviorSanitizer (UBSan) | Signed overflow, invalid shifts, null pointer use, misaligned access, invalid enum values | `-fsanitize=undefined` | Not available. Use clang-cl or WSL2. | 0 |
 | ThreadSanitizer (TSan) | Data races, some deadlocks | `-fsanitize=thread` (not together with ASan) | Not available. Use WSL2, Linux, macOS, or CI. | 6 |
 
-- Add the sanitizer flags to the compile and the link step. The `dev` preset of the starter project does this.
-- With MSVC, run the program from the Developer PowerShell (or from Visual Studio), so that the ASan runtime DLL is on the `PATH`. Do not combine `/fsanitize=address` with `/RTC1`; the starter project removes `/RTC1` from that build.
+- Add the sanitizer flags to the compile and the link step. In phase 0, exercise 0.7, you write a build option for them.
+- With MSVC, run the program from the Developer PowerShell (or from Visual Studio), so that the ASan runtime DLL is on the `PATH`. Do not combine `/fsanitize=address` with the run-time checks `/RTC1`, which CMake adds to debug builds by default. Link with `/INCREMENTAL:NO`.
 - **Standard library checks:** in debug builds, enable the checks of the standard library. libstdc++: `-D_GLIBCXX_ASSERTIONS`. libc++ 18 or newer: `-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE`. MSVC enables checked iterators in debug builds by default.
 
 ## 8. Other tools

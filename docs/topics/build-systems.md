@@ -1,7 +1,7 @@
 # Build Systems
 
 **Phase:** 0, then all phases
-**Related:** [phase 0](../phases/phase-0-tools.md), [software setup](../software-setup.md), [external libraries](external-libraries.md), [toolchain selection](../mentor/toolchain-selection.md), [starter project](../templates/cpp-project/)
+**Related:** [phase 0](../phases/phase-0-tools.md), [software setup](../software-setup.md), [external libraries](external-libraries.md), [toolchain selection](../mentor/toolchain-selection.md)
 
 ## Summary
 
@@ -54,33 +54,58 @@ CMake with Ninja is the default of the course. Ninja is fast, and it works the s
 | Run the tests | `ctest --preset dev` | `meson test -C build/dev` | `xmake test` | `bazel test //...` |
 | Release build | `cmake --preset release` then build | `meson setup build/release --buildtype=release` | `xmake f -m release` then `xmake` | `bazel build -c opt //...` |
 | Select the compiler | `-DCMAKE_CXX_COMPILER=clang++` (first configure only) | `CXX=clang++ meson setup ...` | `xmake f --toolchain=clang` | `CC=clang bazel build ...` |
-| Sanitizers | Cache variable (see the starter project) | `-Db_sanitize=address,undefined` | `set_policy("build.sanitizer.address", true)` | `--copt=-fsanitize=address --linkopt=-fsanitize=address` |
+| Sanitizers | A cache variable and target options (phase 0, exercise 0.7) | `-Db_sanitize=address,undefined` | `set_policy("build.sanitizer.address", true)` | `--copt=-fsanitize=address --linkopt=-fsanitize=address` |
 | Clean | Delete the build directory | Delete the build directory | `xmake clean` | `bazel clean` |
 
 ### The same project in each build system
 
-The starter project has a library `starter_core`, an executable `starter`, and a test executable `starter_tests` that uses doctest from `third_party/`.
+The example project has a library `greeting`, an executable `hello`, and a test executable `greeting_tests` that uses doctest from `third_party/`. The examples show only the structure. The warning set and the sanitizers are not in them: in phase 0, you add them yourself.
 
-**CMake** (`CMakeLists.txt`): see [the starter project](../templates/cpp-project/CMakeLists.txt).
+**CMake** (`CMakeLists.txt`):
+
+```cmake
+cmake_minimum_required(VERSION 3.28)
+project(hello LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+add_library(greeting src/greeting.cpp)
+target_include_directories(greeting PUBLIC include)
+
+add_executable(hello app/main.cpp)
+target_link_libraries(hello PRIVATE greeting)
+
+add_library(doctest INTERFACE)
+add_library(doctest::doctest ALIAS doctest)
+target_include_directories(doctest SYSTEM INTERFACE third_party/doctest)
+
+enable_testing()
+add_executable(greeting_tests tests/greeting_tests.cpp)
+target_link_libraries(greeting_tests PRIVATE greeting doctest::doctest)
+add_test(NAME greeting_tests COMMAND greeting_tests)
+```
 
 **Meson** (`meson.build`, Meson 1.4 or newer):
 
 ```meson
-project('starter', 'cpp',
+project('hello', 'cpp',
   version: '0.1.0',
   default_options: ['cpp_std=c++23', 'warning_level=3', 'werror=true'])
 
 inc = include_directories('include')
-core = static_library('starter_core', 'src/greeting.cpp', include_directories: inc)
+core = static_library('greeting', 'src/greeting.cpp', include_directories: inc)
 core_dep = declare_dependency(link_with: core, include_directories: inc)
 
-executable('starter', 'app/main.cpp', dependencies: core_dep)
+executable('hello', 'app/main.cpp', dependencies: core_dep)
 
 doctest_dep = declare_dependency(
   include_directories: include_directories('third_party/doctest', is_system: true))
-tests = executable('starter_tests', 'tests/greeting_tests.cpp',
+tests = executable('greeting_tests', 'tests/greeting_tests.cpp',
   dependencies: [core_dep, doctest_dep])
-test('starter_tests', tests)
+test('greeting_tests', tests)
 ```
 
 With MSVC, set `cpp_std=c++latest` if your Meson version does not accept `c++23` for MSVC. `warning_level=3` gives `-Wall -Wextra -Wpedantic` or `/W4`. Add the other warnings of the course with `add_project_arguments`.
@@ -92,20 +117,20 @@ set_languages("c++23")
 set_warnings("allextra", "error")
 add_rules("mode.debug", "mode.release")
 
-target("starter_core")
+target("greeting")
     set_kind("static")
     add_files("src/*.cpp")
     add_includedirs("include", {public = true})
 
-target("starter")
+target("hello")
     set_kind("binary")
     add_files("app/main.cpp")
-    add_deps("starter_core")
+    add_deps("greeting")
 
-target("starter_tests")
+target("greeting_tests")
     set_kind("binary")
     add_files("tests/*.cpp")
-    add_deps("starter_core")
+    add_deps("greeting")
     add_sysincludedirs("third_party/doctest")
     add_tests("default")
 ```
@@ -114,22 +139,22 @@ target("starter_tests")
 
 ```python
 cc_library(
-    name = "starter_core",
+    name = "greeting",
     srcs = ["src/greeting.cpp"],
     hdrs = glob(["include/**/*.hpp"]),
     includes = ["include"],
 )
 
 cc_binary(
-    name = "starter",
+    name = "hello",
     srcs = ["app/main.cpp"],
-    deps = [":starter_core"],
+    deps = [":greeting"],
 )
 
 cc_test(
-    name = "starter_tests",
+    name = "greeting_tests",
     srcs = ["tests/greeting_tests.cpp"],
-    deps = [":starter_core", "//third_party/doctest"],
+    deps = [":greeting", "//third_party/doctest"],
 )
 ```
 
@@ -142,7 +167,7 @@ CXX      ?= g++
 CXXFLAGS := -std=c++23 -Wall -Wextra -Wpedantic -Werror -Iinclude -MMD -MP
 OBJS     := build/greeting.o build/main.o
 
-build/starter: $(OBJS)
+build/hello: $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 build/%.o: src/%.cpp | build
@@ -176,9 +201,9 @@ A change to one header rebuilds only the files that include it:
 
 ```text
 $ cmake --build --preset dev
-[1/3] Building CXX object CMakeFiles/starter_core.dir/src/greeting.cpp.o
-[2/3] Linking CXX static library libstarter_core.a
-[3/3] Linking CXX executable starter
+[1/3] Building CXX object CMakeFiles/greeting.dir/src/greeting.cpp.o
+[2/3] Linking CXX static library libgreeting.a
+[3/3] Linking CXX executable hello
 ```
 
 ## Common mistakes

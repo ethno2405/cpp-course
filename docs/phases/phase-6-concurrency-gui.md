@@ -84,7 +84,7 @@ worker.request_stop();   // ask the thread to stop
 - **Synchronization** creates a **happens-before** relation: everything that a thread did before it released a mutex is visible to the thread that takes the mutex next. The same is true for a write and a read of an atomic variable with the default (sequentially consistent) or the acquire and release memory orders, and for the start and the join of a thread.
 - Without synchronization, the compiler and the CPU can reorder memory operations. A thread can see the writes of another thread in a different order, or never.
 - `volatile` is **not** for threads. It is for memory-mapped hardware.
-- **ThreadSanitizer (TSan)** finds data races at run time: `-fsanitize=thread` with GCC or Clang on Linux and macOS (the `tsan` preset of the starter project). It is not available with MSVC; use WSL2 or a CI job on Linux. TSan finds only the races that happen in the run, so run the tests many times and with stress.
+- **ThreadSanitizer (TSan)** finds data races at run time: `-fsanitize=thread` with GCC or Clang on Linux and macOS (the `tsan` preset that you made in phase 0, exercise 0.9). It is not available with MSVC; use WSL2 or a CI job on Linux. TSan finds only the races that happen in the run, so run the tests many times and with stress.
 
 ### 6.4 Shared state: mutexes and condition variables
 

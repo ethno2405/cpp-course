@@ -54,7 +54,7 @@ A C++ program goes through these steps:
 ```text
 greeting.hpp ─┐
 greeting.cpp ─┴─> preprocessor ─> compiler ─> greeting.o ─┐
-main.cpp ─────────> preprocessor ─> compiler ─> main.o ─────┼─> linker ─> starter (executable)
+main.cpp ─────────> preprocessor ─> compiler ─> main.o ─────┼─> linker ─> greeting (executable)
                                                  libstdc++ ─┘
 ```
 
@@ -105,7 +105,23 @@ Rules that follow from this model:
 
 - **Build types:** `Debug` (no optimization, debug information), `Release` (optimized, `NDEBUG` is defined, so `assert` does nothing), `RelWithDebInfo` (optimized, with debug information; good for profiling). Undefined behavior can give different results in different build types.
 - **Out-of-source builds:** all generated files go into the build directory. Never commit the build directory. To start from zero, delete it.
-- **Presets:** `CMakePresets.json` gives names to configurations, so that every developer and the CI use the same settings. Look at the [starter project](../templates/cpp-project/CMakePresets.json).
+- **Presets:** `CMakePresets.json` gives names to configurations, so that every developer and the CI use the same settings. A minimal file with one configure preset:
+
+  ```json
+  {
+    "version": 6,
+    "configurePresets": [
+      {
+        "name": "dev",
+        "generator": "Ninja",
+        "binaryDir": "${sourceDir}/build/${presetName}",
+        "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+      }
+    ]
+  }
+  ```
+
+  Exercise 0.9 extends it with more presets, build presets, and test presets. Read "cmake-presets(7)" in the CMake documentation for all fields.
 
 ### 0.4 The editor and the language server
 
@@ -141,7 +157,7 @@ MSVC shows the same information in a different form: `main.cpp(5): error C3892: 
 ### 0.6 Warnings
 
 - A warning says that the code is valid C++, but it is probably wrong. Many C++ bugs are visible as warnings: a narrowing conversion, a comparison between signed and unsigned values, a variable that hides another variable, a missing `return`.
-- Compilers enable only a few warnings by default. Enable the warning set of the course ([../software-setup.md](../software-setup.md), "Warnings"), and treat warnings as errors (`-Werror`, `/WX`). The starter project does this in `cmake/CompilerWarnings.cmake`.
+- Compilers enable only a few warnings by default. Enable the warning set of the course ([../software-setup.md](../software-setup.md), "Warnings"), and treat warnings as errors (`-Werror`, `/WX`). In exercise 0.5, you write the build code that applies the warning set to your targets.
 - Different compilers find different problems. If you can, build your code with two compilers from time to time (for example GCC and Clang on Linux, or MSVC and clang-cl on Windows). The CI pipeline in phase 8 does this.
 
 ### 0.7 Format and lint
@@ -170,7 +186,7 @@ MSVC shows the same information in a different form: `main.cpp(5): error C3892: 
   | AddressSanitizer (ASan) | Out-of-range access, use after free, use after return, double free, leaks |
   | UndefinedBehaviorSanitizer (UBSan) | Signed overflow, invalid shifts, misaligned access, null pointer use, invalid enum and `bool` values |
 
-- The `dev` preset of the starter project enables both (MSVC: only ASan). Use it for your daily work.
+- In exercise 0.7, you add a build option that enables both (MSVC: only ASan). In exercise 0.9, the `dev` preset uses it. Use it for your daily work.
 - A sanitizer report shows the kind of error, the stack of the bad access, and, for ASan, where the memory was allocated and freed. Read it from the top.
 
 ### 0.10 Documentation
@@ -213,13 +229,31 @@ Skip this topic if you use git every day.
 
 ## Exercises
 
-Make the project `labs/phase-0-tools/` with a root `CMakeLists.txt` (or the build file of your build system) that adds one subdirectory for each exercise (`add_subdirectory(ex-0-03-first-project)`). Copy `.clang-format`, `.clang-tidy`, `CMakePresets.json`, and the `cmake/` directory from the [starter project](../templates/cpp-project/) to `labs/phase-0-tools/`, and change the project name in the files. Ask the mentor if you do not know how.
+In this phase, you build the project setup of the course yourself, one part in each exercise: the build file, the library layout, the C++23 settings, the warning set, format and lint, the sanitizers, a test framework, and presets. At the end (exercise 0.9), your phase 0 project is your template. You copy its setup to each new project of the course, and you improve it when you learn more.
+
+Make the project `labs/phase-0-tools/` with a root build file that adds one subdirectory for each exercise (CMake: `add_subdirectory(ex-0-03-first-project)`). The commands below use CMake. If you use a different build system, the [build systems topic](../topics/build-systems.md) and your mentor translate them.
+
+The project setup is complete when it meets these requirements. Exercise 0.9 checks them.
+
+| Requirement | Exercise |
+|---|---|
+| Out-of-source builds; the build directory is not in git | 0.3 |
+| A library target with public headers in `include/<project>/`, sources in `src/`, and a thin executable in `app/` | 0.3 |
+| C++23 without compiler extensions | 0.3 |
+| `compile_commands.json` for clangd and clang-tidy | 0.3 |
+| The warning set of the course on your own targets, as errors; not on third-party targets | 0.5 |
+| A `.clang-format` file and a `.clang-tidy` file, with a reason for each disabled check | 0.5 |
+| A build option for the sanitizers (address and undefined, or thread) | 0.7 |
+| A test executable with doctest (or your framework), registered with the test runner | 0.8 |
+| A dependency list in `third_party/README.md` | 0.8 |
+| Presets (or the equivalent) for daily work with sanitizers, debugging, release, and ThreadSanitizer | 0.9 |
+| A `README.md` with the commands to configure, build, test, format, and lint | 0.9 |
 
 ### Exercise 0.1: Select and install the toolchain
 
 1. Read [../software-setup.md](../software-setup.md), sections 1–3. Select your compiler, build system, and editor. If you do not know, use the defaults. With a mentor, the mentor records your selection in your profile.
 2. Install the tools.
-3. Do the checks in section 4: the versions, the check program, the starter project, and the debugger. Write the versions in your engineering notebook.
+3. Do the checks in section 4: the versions, the check program, and the debugger. Write the versions in your engineering notebook.
 
 ### Exercise 0.2: Build by hand (core)
 
@@ -234,11 +268,18 @@ Do this exercise without a build system, so that you see what a build system doe
 
 ### Exercise 0.3: The first project with a build system (core)
 
-1. In `ex-0-03-first-project/`, make a library target `greeting` (the files from exercise 0.2, with the header in `include/`), and an executable target that uses it.
-2. Build with your preset or configuration. Run the program.
-3. Change the program: read a name from the first command-line argument, and print a usage message to stderr and return a non-zero exit code if the argument is missing.
-4. Build a release configuration. Compare the size of the debug and the release executables.
-5. Open the project in your editor. Check that go to definition works from `main.cpp` into `greeting.cpp`. If it does not, find `compile_commands.json`, and check the clangd or IDE configuration.
+Do each step, and do its check before you continue.
+
+1. **One executable.** In `ex-0-03-first-project/`, write a build file with one executable target from `main.cpp`. Configure into a separate build directory, build, and run it.
+   - Check: `git status` shows no generated file. All generated files are in the build directory.
+2. **A library and an executable.** Move `make_greeting` into a library target `greeting`: the header in `include/greeting/greeting.hpp`, the source in `src/greeting.cpp`. The executable in `app/main.cpp` links the library and includes `<greeting/greeting.hpp>`. The include directory is a usage requirement of the library (`target_include_directories(greeting PUBLIC include)`), not a global setting.
+   - Check: the executable compiles without its own include directory setting.
+3. **C++23 without extensions.** Set the standard to C++23, make it required, and turn off the compiler extensions (CMake: `CMAKE_CXX_STANDARD`, `CMAKE_CXX_STANDARD_REQUIRED`, `CMAKE_CXX_EXTENSIONS`).
+   - Check: change `make_greeting` to return `std::expected<std::string, GreetingError>` (an empty name is an error). It compiles.
+4. **The compilation database.** Make the build write `compile_commands.json` (CMake: `CMAKE_EXPORT_COMPILE_COMMANDS`, with the Ninja or Makefile generator). Configure clangd or your IDE to use it.
+   - Check: in the editor, go to definition from `app/main.cpp` goes into `src/greeting.cpp`, and the editor shows no false errors.
+5. **Use it.** Read a name from the first command-line argument, and print a usage message to stderr and return a non-zero exit code if the argument is missing or the name is not valid.
+6. **Build types.** Build a `Debug` and a `Release` configuration in two build directories. Compare the size of the executables.
 
 ### Exercise 0.4: Read compiler and linker errors (core)
 
@@ -270,11 +311,25 @@ std::println("{}", first);
 ```
 
 - For the `std::ranges::sort` fragment: find the line that says which concept the type does not satisfy. Why can `std::list` not be sorted with this algorithm? (Hint: look at the iterator category on cppreference.com.)
-- The last fragment compiles, maybe without a warning. Run it. What happens? Run it again in the `dev` preset with the sanitizers. What happens now? Why does the compiler not stop this error?
+- The last fragment compiles, maybe without a warning. Run it. What happens? Why does the compiler not stop this error? You come back to it in exercise 0.7.
 
-### Exercise 0.5: Warnings and clang-tidy (core)
+### Exercise 0.5: Warnings, format, and lint (core)
 
-1. Copy this function into `ex-0-05-lint/`. Call it from `main`. Build it first without the warning set, then with the warning set of the course.
+1. **The warning set.** Write a reusable piece of build code that applies the warning set of the course ([../software-setup.md](../software-setup.md), "Warnings") to one target. In CMake, write a function `course_set_warnings(target)` in `cmake/CompilerWarnings.cmake`. It selects the options by compiler: `if(MSVC)` (this is also true for clang-cl), `CMAKE_CXX_COMPILER_ID` for GCC and Clang. Add the options with `target_compile_options(<target> PRIVATE ...)`. Add an option `COURSE_WARNINGS_AS_ERRORS` (default `ON`) for `-Werror` and `/WX`. For MSVC, also define `_CRT_SECURE_NO_WARNINGS` (see the setup document).
+2. Apply the function to the library and the executable of exercise 0.3, and to every target that you make from now on. Do not apply it to third-party targets.
+   - Check: add this function to the library. The build must fail with at least three different warnings. Read each one, then remove the function.
+
+     ```cpp
+     int sum_until(const std::vector<int>& values, int limit) {
+         int total = 0;
+         for (int i = 0; i < values.size(); i++) {
+             int total = total + values[i];
+             if (total > limit) return limit;
+         }
+     }
+     ```
+
+3. Copy this function into `ex-0-05-lint/`, call it from `main`, and fix every warning:
 
    ```cpp
    double average(std::vector<double> values) {
@@ -287,37 +342,68 @@ std::println("{}", first);
    }
    ```
 
-2. Read each warning. Fix each one.
-3. Run clang-tidy on the file. Read the documentation of each check that it reports. Fix each finding, or write in your notebook why you do not agree with it.
-4. Run clang-format. Look at the diff.
+4. **Format.** Write a `.clang-format` file in the project root. Start from a predefined style (`BasedOnStyle: LLVM`, `Google`, `Microsoft`, or another one), and change only what you have a reason for (for example `IndentWidth` and `ColumnLimit`). Read the "Clang-Format Style Options" page for each option that you set. Configure your editor to format on save.
+   - Check: `clang-format --dry-run --Werror` on a file with a wrong indentation fails. After `clang-format -i`, it passes.
+5. **Lint.** Write a `.clang-tidy` file. Enable the check groups `bugprone-*`, `cppcoreguidelines-*`, `modernize-*`, `performance-*`, and `readability-*` (and more if you want). Run clang-tidy with the compilation database (`clang-tidy -p <build directory> <file>`). For each check that you disable, write the reason in a comment in the file. Limit the analysis to your own headers with `HeaderFilterRegex`.
+   - Check: run clang-tidy on the `average` function from step 3 before your fixes. It must report at least `performance-unnecessary-value-param` and a `modernize-` or `readability-` check. Read the documentation of each check that it reports.
 
 ### Exercise 0.6: Debugger
 
 1. In `ex-0-06-debugger/`, write a function `int factorial(int n)` that computes the factorial in a loop. Call it in `main` with 10, and print the result.
 2. Set a breakpoint in the loop. Start the debugger. Step through three iterations and watch the variables. Use a conditional breakpoint that stops when the loop variable is 7.
-3. Call the function with 20. Run the `debug` build, then the `release` build, then the `dev` build with the sanitizers. Explain the results. (Hint: signed integer overflow.)
-4. Change the function so that it cannot overflow for its input: return `std::optional<std::int64_t>`, or reject inputs that are too large. Write tests for 0, 1, 20, and 21.
+3. Call the function with 20. Run the debug build, then the release build. Explain the results. (Hint: signed integer overflow.) Exercise 0.7 shows a tool that finds this error.
+4. Change the function so that it cannot overflow for its input: return `std::optional<std::int64_t>`, or reject inputs that are too large.
 
 ### Exercise 0.7: Sanitizers (core)
 
-Write a small program in `ex-0-07-sanitizers/` for each error. Run each one in the `debug` build, and then in the `dev` build. Write the result of each run in your notebook.
-
-1. Read the element after the end of a `std::vector` with `operator[]`.
-2. Keep a reference to an element of a `std::vector`, call `push_back` many times, then read through the reference.
-3. Return a reference to a local variable from a function, and read it in the caller.
-4. Shift `1` to the left by 40 bits in an `int`.
-
-Which errors does the debug build show without the sanitizers? Which ones does each sanitizer show? Which ones does MSVC show (if you use it)?
+1. **The sanitizer option.** Add a build option that selects the sanitizers. In CMake, a cache variable `COURSE_SANITIZERS` (empty, `address;undefined`, or `thread`), and a function `course_enable_sanitizers(target)` in `cmake/Sanitizers.cmake`:
+   - GCC and Clang: add `-fsanitize=<list>` and `-fno-omit-frame-pointer` to the compile options, and `-fsanitize=<list>` to the link options (`target_link_options`). Add `-fno-sanitize-recover=all`, so that the first error stops the program and a test fails.
+   - MSVC: only `address` is available: `/fsanitize=address`. It does not work with the run-time checks `/RTC1`, which CMake adds to `CMAKE_CXX_FLAGS_DEBUG` by default: remove them for this build. Link with `/INCREMENTAL:NO`. Print a warning one time if the user selects `undefined` or `thread`.
+   - Optional: the debug checks of the standard library (`_GLIBCXX_ASSERTIONS` for libstdc++ in debug builds).
+2. Apply it to all your targets.
+3. Write a small program in `ex-0-07-sanitizers/` for each error. Run each one in a debug build without sanitizers, and then with `address;undefined`. Write the result of each run in your notebook.
+   1. Read the element after the end of a `std::vector` with `operator[]` (the last fragment of exercise 0.4).
+   2. Keep a reference to an element of a `std::vector`, call `push_back` many times, then read through the reference.
+   3. Return a reference to a local variable from a function, and read it in the caller.
+   4. Shift `1` to the left by 40 bits in an `int`.
+   5. `factorial(20)` from exercise 0.6.
+4. Which errors does the build without the sanitizers show? Which ones does each sanitizer show? Which ones does MSVC show (if you use it)?
 
 ### Exercise 0.8: Add a library without a package manager (core)
 
-1. In `ex-0-08-libraries/`, make a library with one function (for example `int clamp_percent(int value)`), and a test executable.
-2. Add **doctest** by hand: follow the [starter project](../templates/cpp-project/third_party/README.md). Download the header of a release tag, compute its hash, and write the dependency list. Make an `INTERFACE` target with a `SYSTEM` include directory. Register the test with your test runner. Run the tests.
-3. Make a second version in `ex-0-08b-fetchcontent/` that gets doctest with `FetchContent` (or the equivalent of your build system), pinned with `URL` and `URL_HASH`. Configure it. Change one character of the hash, and configure again in a new build directory. Read the error.
-4. Write in your notebook: which version would you use in a team, and why? What does each method need when you work offline?
+1. In `ex-0-08-libraries/`, make a library with one function (for example `int clamp_percent(int value)`), and a test executable in `tests/`.
+2. **Add doctest by hand.**
+   1. Open the release page of doctest on GitHub (github.com/doctest/doctest). Select a release tag. Download the single header `doctest/doctest.h` and the file `LICENSE.txt` of that tag, not of the `master` branch.
+   2. Put them in `third_party/doctest/doctest/doctest.h` and `third_party/doctest/LICENSE.txt`.
+   3. Compute the SHA-256 hash of the header (`sha256sum`, `shasum -a 256`, or `Get-FileHash -Algorithm SHA256`).
+   4. Write `third_party/README.md` with the dependency list ([../topics/external-libraries.md](../topics/external-libraries.md), "Best practices for manual management", item 4).
+   5. Make an `INTERFACE` target `doctest::doctest` with a `SYSTEM` include directory, so that warnings in the header do not stop your build.
+   6. Write tests with doctest. Register the test executable with the test runner (CMake: `enable_testing()` and `add_test`). Run them with `ctest`.
+   - Check: a test that fails makes `ctest` return a non-zero exit code.
+3. **Add the same library with `FetchContent`** (or the equivalent of your build system) in `ex-0-08b-fetchcontent/`, pinned with `URL` and `URL_HASH`. Configure it. Change one character of the hash, and configure again in a new build directory. Read the error.
+4. Write in your notebook: which method would you use in a team, and why? What does each method need when you work offline?
 5. Optional: add the same library with vcpkg or Conan. Compare the steps.
+6. Add tests with doctest to exercises 0.3 and 0.6 (the `factorial` limits: 0, 1, 20, 21).
 
-### Exercise 0.9: Evaluate libraries
+### Exercise 0.9: Presets and the template (core)
+
+1. **Presets.** Write a `CMakePresets.json` (or the equivalent of your build system) with these configurations. Use a hidden base preset for the common settings: the generator, `binaryDir` as `${sourceDir}/build/${presetName}`, and the compilation database.
+
+   | Preset | Build type | Sanitizers | Use |
+   |---|---|---|---|
+   | `dev` | Debug | `address;undefined` | Daily work |
+   | `debug` | Debug | none | The debugger, when the sanitizers make it slow |
+   | `release` | RelWithDebInfo | none | Measurements |
+   | `tsan` | Debug | `thread` | Concurrent code (phase 6). Only on Linux and macOS: use a `condition` on `${hostSystemName}`. |
+
+   Add build presets and test presets for each one. In the test presets, show the output of failed tests (`"output": {"outputOnFailure": true}`), and fail if no test exists (`"execution": {"noTestsAction": "error"}`).
+   - Check: delete all build directories. `cmake --preset dev`, `cmake --build --preset dev`, and `ctest --preset dev` build and test all exercises. Change the clangd setting to the `dev` build directory.
+2. **Local settings** (for example a compiler path or a local library prefix) go to `CMakeUserPresets.json`, which git ignores. Explain in your notebook why they do not go to `CMakePresets.json`.
+3. **README.** Write `labs/phase-0-tools/README.md` with the commands to configure, build, test, format, and lint.
+4. **Check the requirements** in the table at the start of the exercises. Ask the mentor for a review of your setup.
+5. From phase 1, start each new project with a copy of this setup: the `cmake/` directory, the presets, `.clang-format`, `.clang-tidy`, and the root build file. When you improve the setup later (for example in phase 8), write the change in your notebook.
+
+### Exercise 0.10: Evaluate libraries
 
 1. Find three JSON libraries for C++ (for example nlohmann/json, Boost.JSON, and glaze or simdjson).
 2. Compare them with the table in topic 0.11, and add two rows: the compile time of a small example, and the ease of use for your project.
@@ -325,10 +411,11 @@ Which errors does the debug build show without the sanitizers? Which ones does e
 
 ## Done criteria
 
-- [ ] My compiler compiles and runs the check program. My build system builds and tests the starter project. My editor shows errors and goes to definitions. My debugger stops at a breakpoint.
+- [ ] My compiler compiles and runs the check program. My editor shows errors and goes to definitions. My debugger stops at a breakpoint.
 - [ ] I can explain the jobs of the preprocessor, the compiler, and the linker, and the difference between a declaration and a definition.
 - [ ] I can explain a linker error and find its cause.
 - [ ] I can explain the difference between the debug and the release build types, and why UB can give different results in each.
+- [ ] I wrote the project setup myself: the build file, the warning set, the sanitizer option, the presets, and the format and lint files. It meets all requirements in the table of the exercises.
 - [ ] My code has no warnings with the warning set of the course, is formatted with clang-format, and has no clang-tidy findings (or a written reason for each one).
 - [ ] I can find an out-of-range access and a use after free with AddressSanitizer.
 - [ ] I can add a library by hand, pinned to a version and checked with a hash, and record it in the dependency list.

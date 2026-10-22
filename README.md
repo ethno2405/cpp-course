@@ -258,7 +258,6 @@ Start with [docs/README.md](docs/README.md). It has the roadmap, and each phase 
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to send a fix for an error in the course |
 | [docs/](docs/) | Course documents |
 | [docs/mentor/](docs/mentor/) | Assessment, teaching, project, and toolchain instructions for the AI mentor |
-| [docs/templates/cpp-project/](docs/templates/cpp-project/) | A reference starter project: CMake, presets, warnings, sanitizers, format, and lint configuration |
 | `labs/` | Your code (created during the course, only on your track branch) |
 | `learner/` | Your profile and progress (only on your track branch). On `master`, only `.gitignore`. |
 | `.github/workflows/` | Your CI pipeline (phase 8, only on your track branch) |

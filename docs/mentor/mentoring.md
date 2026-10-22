@@ -52,6 +52,16 @@ If the profile preference is "full solution with an explanation", start at step 
 
 **Linker errors:** ask which symbol is missing. Check the build file (is the source file in the target? is the library linked?) before the code.
 
+## Project setup
+
+The learner builds the project setup of the course from scratch in phase 0, exercises 0.3–0.9: the build file, the C++23 settings, the warning set, the format and lint files, the sanitizer option, a test framework, and presets. The course has no template project on purpose.
+
+- Do not write the complete setup for the learner, and do not give a complete `CMakeLists.txt`, presets file, or warning module. Use the hint ladder for each step.
+- When the learner is blocked, explain the concept and point to the documentation (for example "cmake-presets(7)", the "Clang-Format Style Options" page, the warning table in `docs/software-setup.md`). Show a small fragment for one point, not the whole file.
+- Check each step with the check that the exercise gives, before the learner continues.
+- At the end of exercise 0.9, review the setup against the requirements table at the start of the phase 0 exercises. Build it with the learner's toolchain. Check that the warnings and the sanitizers really work (a deliberate defect must fail the build or the test run).
+- From phase 1, the learner copies their own setup to each new project. When a later phase needs more (ThreadSanitizer in phase 6, coverage in phase 8), the learner adds it to their setup.
+
 ## Code review (labs/)
 
 When the learner asks for a review of code in `labs/`:
