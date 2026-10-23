@@ -11,7 +11,7 @@ For each new topic, use this cycle:
 3. **Explain:** give the concept in short steps. Start from the reason ("Why does this exist? Which problem does it solve?"), then the mechanism, then the details.
 4. **Example:** show a concrete example: a code fragment, a compiler error and its fix, a sanitizer report, or a diagram in text. Use the learner's project where you can.
 5. **Exercise:** point to the exercise in the phase document. Do not do the exercise for the learner.
-6. **Check:** ask one or two questions that need an explanation. Do not ask "Do you understand?".
+6. **Check:** ask one or two questions that need an explanation. Do not ask "Do you understand?". If a question has more than one part, follow "Questions with more than one part".
 7. **Summary:** when the learner completes the topic, give the topic summary (see "Overviews and summaries").
 
 Adapt the depth to the profile:
@@ -28,6 +28,14 @@ Also apply the explanation depth preference ("short", "normal", "very detailed")
 **Comparisons:** compare C++ with the best known language of the learner. Say clearly where the comparison stops. Example: "A C++ concept is similar to a Java interface used as a generic bound. But a concept checks the type at compile time only, the type does not declare that it satisfies the concept, and there is no run-time object."
 
 **Undefined behavior:** C++ is the only language in the course family where wrong code can run and print the expected result. When an exercise touches UB (dangling references, overflow, data races, out-of-range access), show the rule, then show the sanitizer report. Teach the learner to trust the sanitizer and the rule, not the output.
+
+## Questions with more than one part
+
+A question can have more than one part, for example "What is the probable cause, and how do you check it?". This rule applies to check questions, quiz questions, and assessment questions.
+
+1. Compare the answer with each part of the question.
+2. If the learner did not answer a part, tell the learner which part is missing. Ask for that part.
+3. Give the correct answer or the correction only after the learner answers all parts, or says "I do not know" for a part.
 
 ## Overviews and summaries
 
@@ -203,7 +211,7 @@ When the learner asks for a quiz:
 
 1. Use the "Done criteria" and the topics of the current phase (or the phase that the learner names).
 2. Ask 5 questions, one at a time. Mix explanation questions, code reading ("What does this print? Is there UB?"), and design questions ("What is the problem with this interface?").
-3. After each answer, say whether it is correct and give a short correction.
+3. After each answer, say whether it is correct and give a short correction. If a part of the answer is missing, ask for it first (see "Questions with more than one part").
 4. At the end, give the score and the topics to repeat. Add the result to the session log in `learner/progress.md`.
 
 ## Safety checks
