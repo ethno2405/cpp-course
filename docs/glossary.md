@@ -96,6 +96,7 @@ Add a term to this list when you find it for the first time.
 | Strong type | A class that wraps a primitive value to give it a meaning and rules, for example `Square` in place of `int`. |
 | TCP | Transmission Control Protocol. A reliable, ordered byte stream between two computers. HTTP and WebSocket use it. |
 | TLS | Transport Layer Security. The encryption protocol of HTTPS and other secure connections. |
+| Token (AI model) | The unit of text that an AI model reads and writes. A token is a part of a word. The usage limits and the price of an AI agent depend on the number of tokens. See [token-usage.md](token-usage.md). |
 | Translation unit | One source file after preprocessing: the input of one compiler run. |
 | Transposition table | A hash table in a chess engine that stores the results of positions that the search already examined. |
 | TSan | ThreadSanitizer. Finds data races at run time. |

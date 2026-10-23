@@ -105,6 +105,7 @@ The course teaches software design in every phase, not only in phase 5.
 | [software-setup.md](software-setup.md) | Compilers, build systems, editors, debuggers, sanitizers, and tools on Windows, macOS, and Linux |
 | [reading-list.md](reading-list.md) | Books, courses, and documentation |
 | [glossary.md](glossary.md) | Terms and abbreviations |
+| [token-usage.md](token-usage.md) | Tips to use fewer AI tokens in the course |
 | [phases/](phases/) | One document for each phase |
 | [projects/](projects/) | Project specifications and task documents |
 | [topics/](topics/) | Detailed explanations of specific topics |

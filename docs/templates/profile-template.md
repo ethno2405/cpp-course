@@ -89,6 +89,7 @@ Levels: 0 = none, 1 = basic, 2 = working, 3 = strong. Source: "assessed" or "sel
 | Help when blocked | Hints first / Full solution with an explanation |
 | Explanation depth | Short / Normal / Very detailed |
 | Language for comparisons | <the best known language> |
+| Token usage tips | On / Off |
 | C++ standard | C++23 (default). Change only if the learner asks. |
 | Other | |
 
