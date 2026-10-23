@@ -98,6 +98,58 @@ The course teaches manual library management first. You do not need a package ma
 
 ## 3. Set up the editor
 
+Select the compiler and the C++23 language mode in your editor or project settings. The editor must use the same include paths and preprocessor definitions as the build.
+
+If the editor has its own C++ analysis, use its project or toolchain settings. For example, Visual Studio can read its MSBuild project, and CLion can read its CMake project. A separate clangd configuration is necessary only when you use clangd.
+
+### Editors that use clangd
+
+#### Check the language server
+
+The compiler and clangd are separate programs. A successful build does not check the editor configuration. clangd uses the Clang parser. It needs the language standard, the include paths, and the preprocessor definitions of the build. Selecting a compiler in a separate build extension does not configure clangd by itself.
+
+Open the language server log in your editor. Check the executable path and the version in the startup log. The editor plugin can use its own clangd. Thus `clangd --version` in the terminal can show a different version. Select the intended executable in the language server settings of your editor. Restart the language server after you change this setting.
+
+For a remote environment such as WSL, run clangd in the same environment as the compiler. Use compiler paths from that environment.
+
+Use workspace settings for the course. Do not change the settings of other projects to fix a course project.
+
+#### Configure the standalone check
+
+The check program in section 4 has no build system yet. Configure clangd before you check that program in the editor.
+
+For GCC 14 on Linux or WSL, create a `.clangd` file beside `check.cpp`:
+
+```yaml
+CompileFlags:
+  Compiler: /usr/bin/g++-14
+  Add: [-std=c++23]
+```
+
+This is one example. Select the settings for your toolchain:
+
+| Build compiler | Compiler setting for clangd | Standard option for clangd |
+|---|---|---|
+| GCC | The absolute path to the selected `g++` executable | `-std=c++23` |
+| LLVM Clang or Apple Clang | The absolute path to the selected `clang++` executable | `-std=c++23` |
+| MSVC | The `clang-cl` driver spelling, so clangd reads MSVC-style options | `/std:c++latest` |
+
+On Linux and macOS, use `command -v` with the selected compiler name to check its path. For MSVC, start the editor from a Developer PowerShell so that clangd inherits the MSVC include paths. If the build selects a standard library with an option, give clangd that option too.
+
+For GCC or Clang, let clangd read the system include paths and the target from the selected compiler. Add `--query-driver` with the exact trusted compiler path to the clangd startup arguments in your editor. For the GCC example, use `--query-driver=/usr/bin/g++-14`.
+
+The compiler in `.clangd` and the path allowed by `--query-driver` must match. clangd runs this compiler to read its configuration. Allow only a compiler that you trust. This query does not make clangd use the GCC parser.
+
+Restart clangd. In the language server log, check that the compile command uses the selected standard option and the intended compiler. Check that the system include paths are from the intended standard library. Do not add paths from a different compiler installation to make an error disappear.
+
+An alternative for a small folder is `compile_flags.txt`, with one compiler option on each line. It does not select the compiler executable. See [clangd project setup](https://clangd.llvm.org/installation.html#project-setup), [configuration](https://clangd.llvm.org/config#compileflags), and [system headers](https://clangd.llvm.org/guides/system-headers).
+
+#### Configure a project with a build system
+
+From exercise 0.3, use the build system to generate `compile_commands.json`. With CMake and Ninja, enable `CMAKE_EXPORT_COMPILE_COMMANDS`. The database records the compiler and the options for each source file. Select the intended compiler when you first configure the build directory.
+
+When the database supplies the compiler and the standard option, remove the scratch overrides for those settings. Keep a version-specific clangd workaround only while the matching problem exists. Do not copy the scratch configuration into each lab. Do not edit the generated database by hand.
+
 ### VS Code (default)
 
 Install VS Code (code.visualstudio.com) and these extensions:
@@ -108,7 +160,22 @@ Install VS Code (code.visualstudio.com) and these extensions:
   - **C/C++** (ms-vscode.cpptools) for the Visual Studio debugger (MSVC) and for gdb. If you use clangd, disable the IntelliSense of this extension: set `"C_Cpp.intelliSenseEngine": "disabled"`.
   - **CodeLLDB** (vadimcn.vscode-lldb) for LLDB on macOS and Linux.
 
-Recommended settings for the course projects (`.vscode/settings.json`):
+In VS Code, open **View > Output** and select **clangd** to read the language server log. Use `clangd.path` in the workspace settings to select a specific installed executable when necessary.
+
+For WSL, open the folder in a WSL window. Install the extensions in that WSL distribution.
+
+For the standalone GCC example above, add these workspace settings in `.vscode/settings.json`:
+
+```json
+{
+  "clangd.arguments": ["--query-driver=/usr/bin/g++-14"],
+  "C_Cpp.intelliSenseEngine": "disabled"
+}
+```
+
+Keep any other settings that the workspace needs. Use your selected compiler path in place of the example path. With a different editor, put the startup argument in that editor's language server settings.
+
+Recommended settings after the project has a `dev` preset and its compilation database (`.vscode/settings.json`):
 
 ```json
 {
@@ -123,9 +190,9 @@ Recommended settings for the course projects (`.vscode/settings.json`):
 }
 ```
 
-The path in `--compile-commands-dir` is the build directory of the `dev` preset. Change it if you use a different preset or build system.
+The path in `--compile-commands-dir` must contain `compile_commands.json`. Use this setting only after that directory exists. Change the path for a different preset or build system. For GCC or Clang, also add `--query-driver` with the exact compiler path from the database when clangd needs it to find the system headers. Restart clangd and check the command in its Output log.
 
-**Windows note:** clangd works with MSVC projects, but only the Ninja generator writes `compile_commands.json`. The Visual Studio generator does not. The default presets of the course use Ninja.
+**Windows note:** with CMake and clangd, use the Ninja generator to export `compile_commands.json`. The Visual Studio generator does not export it. Visual Studio can use its own project analysis instead.
 
 ### Other editors and IDEs
 
@@ -136,7 +203,7 @@ The path in `--compile-commands-dir` is the build directory of the `dev` preset.
 | Qt Creator | Opens CMake projects. Good choice if you select Qt for the GUI in phase 6. |
 | Neovim, Emacs, Helix, Zed, Sublime Text | Use clangd as the language server. Use gdb, LLDB, or a Debug Adapter Protocol plugin (for example `nvim-dap`) to debug. |
 
-All editors need the same thing from the build: a `compile_commands.json` file, or a project format that the IDE understands. Set `CMAKE_EXPORT_COMPILE_COMMANDS` to `ON` (the course presets do this), or use the equivalent option of your build system.
+For a project with a build system, give the editor a `compile_commands.json` file or a project format that it understands. With CMake and Ninja, set `CMAKE_EXPORT_COMPILE_COMMANDS` to `ON`. Before exercise 0.3, use the standalone settings of your editor. If the editor uses clangd, follow the standalone configuration above.
 
 ## 4. Do a check of the tools
 
@@ -241,6 +308,21 @@ The last line of the output must be `OK`.
 - MSVC: use `/std:c++latest`. Some versions also accept `/std:c++23preview`. CMake selects the correct flag for `CMAKE_CXX_STANDARD 23`.
 - Clang on Linux uses libstdc++ by default. If the check fails, install a newer libstdc++ (the GCC 14 package), or use libc++ 20 or newer with `-stdlib=libc++`.
 - If `<print>` or `std::jthread` is missing with Clang and libc++, the libc++ version is too old. libc++ 18 and 19 hide `std::jthread` and `<stop_token>` behind the flag `-fexperimental-library`. Use Clang and libc++ 20 or newer.
+
+### The editor diagnostics
+
+1. Open `check.cpp` in the configured editor.
+2. Check that the editor uses the selected compiler configuration. With clangd, check the language server log for the executable, the compile command, and the standard library paths.
+3. Check the diagnostics. The editor must accept the same course features as the compiler. Investigate each error. A successful run does not prove that the editor configuration is correct.
+
+If compilation succeeds but the editor reports missing C++ features, first check the standard option and the header paths. For example, explicit object parameters need C++23, and `std::jthread` needs C++20 or newer.
+
+If the settings are correct, check the clangd version and its compatibility with the standard library. clangd can have a parser defect even when GCC accepts the program. Two known cases are:
+
+- With libstdc++, clangd 18 can report that `std::expected` is missing. Use clangd 19 or newer for this case. See the [Clang 19 release notes](https://releases.llvm.org/19.1.0/tools/clang/docs/ReleaseNotes.html#c-20-feature-support).
+- With libstdc++ 14, clangd can report that `forward_like` with a deduced return type is used before its definition in a ranges expression. For this exact diagnostic, add `-fno-builtin-std-forward_like` to the `Add` list in the local `.clangd` file. This is a clangd workaround. Keep it out of the GCC build options. See [clangd issue 2575](https://github.com/clangd/clangd/issues/2575).
+
+Use these workarounds only after you reproduce the matching problem. Keep real warnings visible. Do not change working course code to an older C++ form to satisfy an editor with the wrong configuration.
 
 ### The debugger
 

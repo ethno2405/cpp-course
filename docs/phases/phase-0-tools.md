@@ -125,8 +125,8 @@ Rules that follow from this model:
 
 ### 0.4 The editor and the language server
 
-- **clangd** is the language server of the course. It compiles your code in the background with the same options as the build. It reads them from `compile_commands.json`, which the build system writes (CMake: `CMAKE_EXPORT_COMPILE_COMMANDS=ON`). Without this file, clangd guesses the options, and it shows wrong errors.
-- IDEs like CLion and Visual Studio read the CMake project directly.
+- **clangd** is the default language server of the course. If your editor uses clangd, configure it as follows. It parses your code with the Clang parser. Give it the standard, include paths, and definitions of the build through `compile_commands.json` (CMake with Ninja: `CMAKE_EXPORT_COMPILE_COMMANDS=ON`). Before a build system exists, configure the standalone file as [software-setup.md](../software-setup.md#configure-the-standalone-check) describes. Without these settings, clangd can show errors for code that the compiler accepts.
+- IDEs like CLion and Visual Studio can read the project settings directly. If you use their own C++ analysis, select the compiler and C++23 in those settings. You do not need a separate clangd configuration.
 - Learn these functions in your editor: completion, errors while you type, go to definition, go to declaration, switch between the header and the source file, find all references, rename a symbol, show the documentation on hover, quick fixes, run and debug a single test.
 - Configure the editor to run clang-format when you save a file.
 
@@ -260,7 +260,7 @@ The project setup is complete when it meets these requirements. Exercise 0.9 che
 
 1. Read [../software-setup.md](../software-setup.md), sections 1–3. Select your compiler, build system, and editor. If you do not know, use the defaults. With a mentor, the mentor records your selection in your profile.
 2. Install the tools.
-3. Do the checks in section 4: the versions, the check program, and the debugger. Write the versions in your engineering notebook.
+3. Do the checks in section 4: the versions, the check program, the editor diagnostics, and the debugger. Check both the build and the editor before you complete this exercise. Write the versions in your engineering notebook.
 
 ### Exercise 0.2: Build by hand (core)
 
