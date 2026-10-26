@@ -266,6 +266,15 @@ The project setup is complete when it meets these requirements. Exercise 0.9 che
 
 Do this exercise without a build system, so that you see what a build system does for you.
 
+**Mentor preparation:** follow [Explain prerequisites before use](../mentor/mentoring.md#explain-prerequisites-before-use) and [Explain commands](../mentor/mentoring.md#explain-commands). Before the exercise, explain:
+
+- Repeated header inclusion and protection with `#pragma once` or include guards. Explain that the protection applies within each translation unit.
+- The header search rules for quoted and angle-bracket includes in the selected toolchain.
+- Direct and transitive includes. Show how to find the documented header for a standard library name.
+- Each new option in the compilation and linking commands, including the warning options that the learner uses.
+
+During the linker error checks, follow [Teach diagnostic reading](../mentor/mentoring.md#teach-diagnostic-reading). After the learner's attempt, explain the reported symbol and location. For GCC with libstdc++, this can include expanded type aliases, application binary interface (ABI) tags such as `[abi:cxx11]`, and section offsets such as `.text+0x45`. Explain only the notation that appears in the actual output. Let the learner discover each result before you validate it.
+
 1. In `ex-0-02-by-hand/`, write `greeting.hpp` with the declaration `std::string make_greeting(std::string_view name);`, `greeting.cpp` with the definition, and `main.cpp` that calls it.
 2. Compile each source file to an object file. GCC or Clang: `g++ -std=c++23 -c greeting.cpp`. MSVC: `cl /std:c++latest /EHsc /c greeting.cpp`. Find the object files.
 3. Link the object files to an executable. GCC or Clang: `g++ greeting.o main.o -o greeting`. MSVC: `cl greeting.obj main.obj`. Run it.

@@ -29,6 +29,41 @@ Also apply the explanation depth preference ("short", "normal", "very detailed")
 
 **Undefined behavior:** C++ is the only language in the course family where wrong code can run and print the expected result. When an exercise touches UB (dangling references, overflow, data races, out-of-range access), show the rule, then show the sanitizer report. Teach the learner to trust the sanitizer and the rule, not the output.
 
+## Explain prerequisites before use
+
+Before an exercise, identify the language features, directives, tool options, and output formats that the learner must use.
+
+1. Check the profile and earlier answers for evidence that the learner knows them. Experience with a related tool is not sufficient evidence.
+2. Explain each unfamiliar item before its first use. State what it does, why the exercise uses it, and one important limit.
+3. Keep the explanation close to the instruction that needs it. Explain only the details needed for the current step.
+4. Distinguish language requirements, implementation behavior, and course conventions. For example, direct includes support portability. Treating warnings as errors is a course convention.
+5. Do not treat a successful command as evidence that the learner understands its options or output.
+
+## Explain commands
+
+Before the learner runs a new command:
+
+- Identify the tool, input files, and output files.
+- Explain each new option. State its effect and the reason for using it.
+- State what the learner must inspect or report. Let the learner discover the result. Then validate it and explain any differences.
+- Explain changed options when a later command differs.
+
+Do not repeat explanations unless the learner needs a reminder. Do not reveal the exact output or diagnostic before the learner runs the command. Explain enough to make the task clear without giving away the result.
+
+For compilation exercises, distinguish preprocessing, compilation, and linking. Explain which steps the command performs and where it stops.
+
+## Teach diagnostic reading
+
+When an exercise introduces a diagnostic, explain its structure before asking the learner to interpret it. Use a different example if the explanation would reveal the result of the exercise.
+
+1. Identify the tool and the build or execution stage that reports the problem.
+2. Identify the main diagnostic, the affected name, and the reported location.
+3. Explain unfamiliar terms and notation in the diagnostic. Adapt the depth to the learner's knowledge and the task.
+4. Separate details needed to fix the problem from details that provide context.
+5. Connect the diagnostic to the rule or missing input that causes it.
+
+Use the actual output when you review the learner's result. Do not invent diagnostic text. Give hints before a full explanation when diagnosis is the learner's task. After the attempt, explain any unfamiliar notation that remains.
+
 ## Questions with more than one part
 
 A question can have more than one part, for example "What is the probable cause, and how do you check it?". This rule applies to check questions, quiz questions, and assessment questions.
