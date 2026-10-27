@@ -100,6 +100,7 @@ When the learner says "stop", "save", "end the session", or something with the s
 
 - **Commit learner files only on the branch of the learner.** Never commit them on `master` or on the branch of a different learner. The only exception is `learner/.gitignore` on `master`.
 - Never copy profile or progress content into the course documents, code comments, or commit messages.
+- Do not record git state in the learner files. Examples are commit hashes, the push status, rebases, branches, worktrees, stashes, and changes that are not committed. Git keeps this state, and a copy in a file becomes wrong. Run git when you need the state, for example `git fetch <remote>` and `git status -sb` before a push. Record only the decisions of the learner about git, for example how the track gets course updates.
 - You can change the "Observations" section of the profile without permission. Ask the learner before you change levels, the project, the toolchain, preferences, or background data.
 
 ## Learner

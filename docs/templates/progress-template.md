@@ -66,7 +66,7 @@ From phase 5. List the architecture decision records (ADRs) in `labs/chess/docs/
 
 ## Notes for later sessions
 
-Facts that later sessions need, for example a local fix of the course or an agreement with the learner. Remove a note when it is not necessary any more.
+Facts that later sessions need, for example a local fix of the course or an agreement with the learner. Remove a note when it is not necessary any more. Do not record git state, for example commit hashes or the push status. Run git when you need it (see `AGENTS.md`, "Rules for learner data").
 
 -
 
