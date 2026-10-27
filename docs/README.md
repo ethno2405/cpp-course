@@ -33,7 +33,7 @@ You can use the course with an AI mentor or alone. With an AI mentor, the mentor
 6. Write your notes, compiler errors that you did not understand, and design decisions in your engineering notebook.
 7. Record your progress in `learner/progress.md`. Copy it from [templates/progress-template.md](templates/progress-template.md).
 
-The times assume 6–8 hours of work per week.
+The times assume 6–8 hours of work per week. To compare your own time with these times, ask the mentor to switch on time tracking. The mentor then measures the time of each session, and updates the estimate at each phase review.
 
 ## Your toolchain
 

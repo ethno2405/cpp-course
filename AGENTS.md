@@ -57,6 +57,8 @@ Do these steps at the start of every session, before you teach:
    | Exists | Missing | Progress lost | Run `git log --all --oneline -- learner/progress.md` to find an earlier version, and offer to restore it. If there is no earlier version, create the file from `docs/templates/progress-template.md`. Ask the learner for their current phase and their completed exercises, and fill them in. |
 
    Do not teach before the profile exists, unless the learner refuses the assessment. If the learner refuses, write a minimal profile with the answers that you have, and mark the levels as "not assessed". Use the reference project (the chess engine) and the default toolchain until the learner selects a different one.
+
+   If the "Time tracking" preference in the profile is "On", run `date` and keep the start time of the session (see "Time tracking"). If the profile has no "Time tracking" row, ask the learner one time whether they want it. Add the row with the answer.
 3. Read only the part of the current phase document in `docs/phases/` that the session needs. The phase documents are long, so do not read a full document at session start:
    1. List the headings with their line numbers, for example `grep -nE '^#{2,4} ' docs/phases/<file>.md`.
    2. Read the start of the document up to the first topic or module: the goal and the reading.
@@ -88,7 +90,7 @@ If the learner gives a specific request in the first message (for example "Expla
 When the learner says "stop", "save", "end the session", or something with the same meaning, and before a long break in the work:
 
 1. Add an entry to the top of the "Session log" in `learner/progress.md`: date, what the learner did, the next step, and open questions. Keep only the 5 newest entries in the session log. Move older entries to the top of `learner/session-log-archive.md` (create the file if it does not exist). Before you move an entry, copy the facts that later sessions still need to "Notes for later sessions" in `learner/progress.md`. Read the archive only when the learner asks about an earlier session.
-2. Update the "Current position" in `learner/progress.md`.
+2. Update the "Current position" in `learner/progress.md`. If the "Time tracking" preference in the profile is "On", add a row to the "Time log" in `learner/progress.md` (see "Time tracking").
 3. Update the "Observations" section of `learner/profile.md`: strengths, gaps, and misconceptions that you saw. Then give the learner the session summary: their performance, their gaps, what to improve, and what is next. See `docs/mentor/mentoring.md`, "Overviews and summaries".
 4. Run `git status --porcelain -- learner/ labs/ .github/workflows/`. If the learner data or the learner code has changes that are not committed:
    1. Show the learner the list of changed files.
@@ -96,6 +98,19 @@ When the learner says "stop", "save", "end the session", or something with the s
    3. If the learner agrees, make sure that the current branch is the track branch. Stage only the learner files: `git add -- learner/ labs/ .github/workflows/`. Do a check that no build outputs (`build/`, `out/`, executables, object files), database files, real personal data, or `.env` files are staged. Commit with a one-line message that describes the work, for example "Add phase 3 iterator exercises" or "Update progress after a phase 1 session".
    4. Ask whether they want to push. Push only to a remote that the learner owns, or to a remote where the owner permits track branches. If a remote with the name `private` exists, push the track branch to it. Do not push a track branch to a public remote before the learner agrees to make their data public. If `origin` is the original course repository and the learner cannot push to it, do not push. Tell the learner how to make a fork or add their own remote. Push with `git push -u <remote> <branch>`.
 5. Tell the learner what you saved and committed.
+
+### Time tracking
+
+The learner can ask the mentor to measure the time that they spend on the course. The mentor then compares this time with the plan of the course. The "Time tracking" preference in the profile switches this on or off. When it is "On", do these steps at the session end:
+
+1. Measure the session time:
+   - If you can read the timestamps of the messages of the session, use them. Add the gaps between consecutive messages that are shorter than 15 minutes. A longer gap is a break and does not count. Read only the timestamps, not the content of the messages. For example, Claude Code writes one transcript file for each session in a subdirectory of `~/.claude/projects/` for the working directory. Each message in the file has a `timestamp` field in UTC.
+   - If you cannot read the timestamps, use the start time from the session start and the current time from `date`. Ask the learner for the length of the breaks, and subtract it.
+2. Ask the learner how much time they worked on the course outside the sessions since the last row. Examples are reading the course documents and coding without the mentor.
+3. Add a row to the "Time log" in `learner/progress.md`: the date, the phase and the exercise, the session time, the time outside the sessions, and the method ("transcript" or "clock"). Round each time to 0.25 hours. If the progress file has no "Time log" section or no "Hours" column in the "Phases" table, add them from `docs/templates/progress-template.md`.
+4. Do not guess a time. If you cannot measure it, write "not measured".
+
+At the phase review, the mentor adds the hours of the phase and updates the time estimate for the course (see `docs/mentor/assessment.md`, "Phase review").
 
 ### Rules for learner data
 
@@ -154,8 +169,8 @@ labs/                       The learner's code. Only on track branches.
 learner/                    Learner data. Only on track branches.
   .gitignore                On master: ignores all learner data
   profile.md                Background, levels, project, toolchain, environment, preferences, observations
-  progress.md               Current position, status, notes, the 5 newest session log entries
-  session-log-archive.md    Older session log entries
+  progress.md               Current position, status, notes, the time log of the current phase, the 5 newest session log entries
+  session-log-archive.md    Older session log entries and time log rows
 .github/workflows/          The learner's CI pipeline (phase 8). Only on track branches.
 learner-backup-<date>/      Local backups of learner data. Ignored by git.
 ```

@@ -90,6 +90,7 @@ Levels: 0 = none, 1 = basic, 2 = working, 3 = strong. Source: "assessed" or "sel
 | Explanation depth | Short / Normal / Very detailed |
 | Language for comparisons | <the best known language> |
 | Token usage tips | On / Off |
+| Time tracking | On / Off |
 | Tone of voice | Course default (see `docs/mentor/mentoring.md`, "Tone of voice") / <the changed items> |
 | C++ standard | C++23 (default). Change only if the learner asks. |
 | Other | |

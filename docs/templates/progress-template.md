@@ -14,18 +14,18 @@ The AI mentor updates this file during each session. The file is in `learner/`. 
 
 ## Phases
 
-| Phase | Status | Started | Completed | Notes |
-|---|---|---|---|---|
-| 0 Tools, build, and environment | Not started | | | |
-| 1 C++ basics | Not started | | | |
-| 2 Object lifetime and ownership | Not started | | | |
-| 3 Templates, concepts, lambdas, and ranges | Not started | | | |
-| 4 Errors, libraries, and API design | Not started | | | |
-| 5 Software design and SOLID | Not started | | | |
-| 6 Concurrency and user interfaces | Not started | | | |
-| 7 Network services and persistence | Not started | | | |
-| 8 Professional practices | Not started | | | |
-| 9 Beyond | Not started | | | |
+| Phase | Status | Started | Completed | Hours | Notes |
+|---|---|---|---|---|---|
+| 0 Tools, build, and environment | Not started | | | | |
+| 1 C++ basics | Not started | | | | |
+| 2 Object lifetime and ownership | Not started | | | | |
+| 3 Templates, concepts, lambdas, and ranges | Not started | | | | |
+| 4 Errors, libraries, and API design | Not started | | | | |
+| 5 Software design and SOLID | Not started | | | | |
+| 6 Concurrency and user interfaces | Not started | | | | |
+| 7 Network services and persistence | Not started | | | | |
+| 8 Professional practices | Not started | | | | |
+| 9 Beyond | Not started | | | | |
 
 ## Completed exercises
 
@@ -63,6 +63,14 @@ From phase 5. List the architecture decision records (ADRs) in `labs/chess/docs/
 | ADR | Title | Date |
 |---|---|---|
 | | | |
+
+## Time log
+
+The mentor adds a row at each session end when the "Time tracking" preference in the profile is "On" (see `AGENTS.md`, "Time tracking"). At the phase review, the mentor writes the total hours of the phase in the "Phases" table. Then the mentor moves the rows of the phase to the "Time log" section of `learner/session-log-archive.md`.
+
+| Date | Phase and exercise | Session (h) | Outside sessions (h) | Method |
+|---|---|---|---|---|
+| | | | | |
 
 ## Notes for later sessions
 

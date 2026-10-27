@@ -45,7 +45,7 @@ Ask these questions. You can ask related questions together in one message.
 6. Which tools do you use: git, a terminal, a debugger with breakpoints, a build system (CMake, Make, MSBuild, Gradle, ...), a package manager, a CI pipeline?
 7. Which operating system and which editor or IDE do you use?
 8. Do you know which compiler and build system you want to use? (If not, the mentor helps in step 5.)
-9. How many hours per week can you work on the course?
+9. How many hours per week can you work on the course? Do you want the mentor to measure the time that you spend on the course? (yes / no) Explain that the mentor uses the measured time to estimate the time for the course.
 10. What is your goal? (for example: game or engine development, systems programming, high-performance code, a job that uses C++, better design skills in general, a specific project)
 11. How do you want the mentor to help when you are blocked? (hints first, and a solution only when I ask / a full solution with an explanation)
 12. How detailed must the explanations be? (short / normal / very detailed)
@@ -244,4 +244,9 @@ When the learner says that they completed a phase:
 4. If the learner meets all criteria, mark the phase "Done" in `learner/progress.md`.
 5. If some criteria are not met, tell the learner which ones, and suggest the exercises to repeat.
 6. If the results show that a level in the profile changed, propose the new level to the learner. Change it after the learner agrees. Add the review to the "Assessment history" in the profile.
-7. Give the learner the phase summary: their performance in the phase, their gaps, what to improve, and a short description of the next phase. See `docs/mentor/mentoring.md`, "Overviews and summaries". Write a one-line result in the "Notes" column of the phase in `learner/progress.md`.
+7. If the "Time tracking" preference in the profile is "On":
+   1. Add the session time and the time outside the sessions of all rows of the phase in the "Time log" of `learner/progress.md`. Write the total in the "Hours" column of the phase in the "Phases" table.
+   2. Compare the total with the time of the phase in `docs/README.md`. Those times assume 6–8 hours of work per week.
+   3. Update the estimate for the remaining phases. Use the ratio of the measured hours to the planned hours, and the learning path in the profile. Give the estimate as a range, and say what makes it uncertain.
+   4. Move the rows of the phase to the top of the "Time log" section of `learner/session-log-archive.md`. Create the section if it does not exist.
+8. Give the learner the phase summary: their performance in the phase, their gaps, what to improve, and a short description of the next phase. See `docs/mentor/mentoring.md`, "Overviews and summaries". Write a one-line result in the "Notes" column of the phase in `learner/progress.md`.
