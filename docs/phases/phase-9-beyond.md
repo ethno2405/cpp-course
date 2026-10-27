@@ -2,7 +2,7 @@
 
 **Time:** Open-ended. Each module takes 1–4 weeks.
 **Prerequisites:** Phase 8 (for most modules, phases 1–6 are enough).
-**Code:** `labs/phase-9-<module>/` and `labs/chess/`
+**Code:** `labs/9-<module>/` and `labs/chess/`
 
 ## Goal
 

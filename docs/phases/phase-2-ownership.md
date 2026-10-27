@@ -2,7 +2,7 @@
 
 **Time:** 3 weeks. 2 weeks if you know modern C++ or Rust well.
 **Prerequisites:** Phase 1.
-**Code:** `labs/phase-2-ownership/`
+**Code:** `labs/2-ownership/`
 
 ## Goal
 
@@ -241,7 +241,7 @@ private:
 
 ## Exercises
 
-Make the project `labs/phase-2-ownership/`. Run all exercises in the `dev` preset with the sanitizers.
+Make the project `labs/2-ownership/`. Run all exercises in the `dev` preset with the sanitizers.
 
 ### Exercise 2.1: Lifetime tracer (core)
 

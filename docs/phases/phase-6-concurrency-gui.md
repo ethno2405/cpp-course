@@ -2,7 +2,7 @@
 
 **Time:** 4–5 weeks.
 **Prerequisites:** Phase 5.
-**Code:** `labs/phase-6-concurrency/` and `labs/chess/`
+**Code:** `labs/6-concurrency/` and `labs/chess/`
 
 ## Goal
 
@@ -247,7 +247,7 @@ private:
 
 ## Exercises
 
-Make the project `labs/phase-6-concurrency/`. Run the tests of each exercise under ThreadSanitizer (the `tsan` preset) if your platform supports it; else run them in WSL2 or in a Linux CI job later.
+Make the project `labs/6-concurrency/`. Run the tests of each exercise under ThreadSanitizer (the `tsan` preset) if your platform supports it; else run them in WSL2 or in a Linux CI job later.
 
 ### Exercise 6.1: Parallel word count
 

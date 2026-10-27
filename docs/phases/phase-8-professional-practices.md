@@ -2,7 +2,7 @@
 
 **Time:** 3–4 weeks.
 **Prerequisites:** Phase 7.
-**Code:** `labs/phase-8-practices/`, `labs/chess/`, and `.github/workflows/`
+**Code:** `labs/8-practices/`, `labs/chess/`, and `.github/workflows/`
 
 ## Goal
 
@@ -166,7 +166,7 @@ Most C++ work is on existing code, often with old C++ and few tests.
 
 ## Exercises
 
-Make the project `labs/phase-8-practices/` for the exercises that do not use the chess engine. Do the other exercises in `labs/chess/`.
+Make the project `labs/8-practices/` for the exercises that do not use the chess engine. Do the other exercises in `labs/chess/`.
 
 ### Exercise 8.1: Test strategy
 

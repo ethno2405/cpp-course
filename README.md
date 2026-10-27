@@ -200,7 +200,7 @@ Set up clangd and the debugger in VS Code for my chess engine.
 ### Exercises
 
 ```
-I finished exercise 2.2. Check my solution in labs/phase-2-ownership.
+I finished exercise 2.2. Check my solution in labs/2-ownership.
 Give me a hint for exercise 3.4. Do not give the solution.
 I am blocked on exercise 6.3. Show me the full solution and explain it.
 ```
@@ -208,7 +208,7 @@ I am blocked on exercise 6.3. Show me the full solution and explain it.
 ### Code and design review
 
 ```
-Review my code in labs/phase-4-errors-apis.
+Review my code in labs/4-errors-apis.
 Review the design of my chess engine against the SOLID principles.
 Does my Evaluator interface break the interface segregation principle?
 Is this shared_ptr necessary, or can I change the design?

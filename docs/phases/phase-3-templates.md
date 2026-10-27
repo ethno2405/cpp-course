@@ -2,7 +2,7 @@
 
 **Time:** 3–4 weeks.
 **Prerequisites:** Phase 2.
-**Code:** `labs/phase-3-templates/`
+**Code:** `labs/3-templates/`
 
 ## Goal
 
@@ -243,7 +243,7 @@ std::vector<int> grades = passed | std::ranges::to<std::vector>();   // C++23
 
 ## Exercises
 
-Make the project `labs/phase-3-templates/`.
+Make the project `labs/3-templates/`.
 
 ### Exercise 3.1: Static and dynamic dispatch (core)
 

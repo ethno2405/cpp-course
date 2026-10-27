@@ -2,7 +2,7 @@
 
 **Time:** 4 weeks.
 **Prerequisites:** Phase 6.
-**Code:** `labs/phase-7-services/` and `labs/chess/`
+**Code:** `labs/7-services/` and `labs/chess/`
 
 ## Goal
 
@@ -199,7 +199,7 @@ I/O threads (io_context)                  Engine threads (search)
 
 ## Exercises
 
-Make the project `labs/phase-7-services/`. Add Boost (Asio and Beast), nlohmann/json, SQLite, and spdlog with the methods in [../topics/external-libraries.md](../topics/external-libraries.md), and record them in the dependency list.
+Make the project `labs/7-services/`. Add Boost (Asio and Beast), nlohmann/json, SQLite, and spdlog with the methods in [../topics/external-libraries.md](../topics/external-libraries.md), and record them in the dependency list.
 
 ### Exercise 7.1: Asio and coroutines (core)
 

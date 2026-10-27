@@ -2,7 +2,7 @@
 
 **Time:** 1 week if you already wrote programs in modern C++. 2 weeks if you know C, Rust, or old C++. 3 weeks if you know C#, Java, Go, Swift, Kotlin, or TypeScript. 4–6 weeks if you know only dynamic languages.
 **Prerequisites:** Phase 0.
-**Code:** `labs/phase-1-basics/`
+**Code:** `labs/1-basics/`
 
 ## Goal
 
@@ -329,7 +329,7 @@ C++ has no single official style. The standard library uses `snake_case` for eve
 
 ## Exercises
 
-Make the project `labs/phase-1-basics/`, with the same configuration files as in phase 0. Each exercise is a subdirectory with a library, an executable (if the exercise has one), and tests. Write tests for every function. The project must build with the warning set, pass clang-tidy, and pass the tests under the sanitizers.
+Make the project `labs/1-basics/`, with the same configuration files as in phase 0. Each exercise is a subdirectory with a library, an executable (if the exercise has one), and tests. Write tests for every function. The project must build with the warning set, pass clang-tidy, and pass the tests under the sanitizers.
 
 ### Exercise 1.1: Temperature converter
 

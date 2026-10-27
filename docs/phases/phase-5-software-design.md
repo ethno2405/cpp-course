@@ -2,7 +2,7 @@
 
 **Time:** 4 weeks. Plan 5 weeks if design principles are new to you.
 **Prerequisites:** Phase 4.
-**Code:** `labs/phase-5-design/` and `labs/chess/`
+**Code:** `labs/5-design/` and `labs/chess/`
 
 ## Goal
 
@@ -381,7 +381,7 @@ A **code smell** (Kent Beck, Martin Fowler) is a sign that a design can have a p
 
 ## Exercises
 
-Make the project `labs/phase-5-design/`. If you know design principles well (D = 3 in your profile), do exercises 5.2, 5.5, 5.7, and 5.9.
+Make the project `labs/5-design/`. If you know design principles well (D = 3 in your profile), do exercises 5.2, 5.5, 5.7, and 5.9.
 
 ### Exercise 5.1: Single responsibility
 

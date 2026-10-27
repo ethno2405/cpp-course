@@ -2,7 +2,7 @@
 
 **Time:** 3–4 weeks.
 **Prerequisites:** Phase 3.
-**Code:** `labs/phase-4-errors-apis/`
+**Code:** `labs/4-errors-apis/`
 
 ## Goal
 
@@ -218,7 +218,7 @@ From the C++ Core Guidelines, section "I", and common practice:
 
 ## Exercises
 
-Make the project `labs/phase-4-errors-apis/`.
+Make the project `labs/4-errors-apis/`.
 
 ### Exercise 4.1: Error type by hand (core)
 

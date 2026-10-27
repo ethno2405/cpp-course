@@ -146,7 +146,7 @@ docs/
   topics/                   Detailed explanations of specific topics
   templates/                Templates for documents, the profile, and progress
 labs/                       The learner's code. Only on track branches.
-  phase-<n>-<name>/         A build project with one target (or one subdirectory) for each exercise of a phase
+  <phase>-<name>/          A build project with one target (or one subdirectory) for each exercise of a phase
   chess/                    Main project
 learner/                    Learner data. Only on track branches.
   .gitignore                On master: ignores all learner data
@@ -197,7 +197,7 @@ The course documents use this stack. The learner can select a different project 
 ## Code conventions (labs/)
 
 - **Standard:** C++23 with no compiler extensions (`CMAKE_CXX_STANDARD 23`, `CMAKE_CXX_STANDARD_REQUIRED ON`, `CMAKE_CXX_EXTENSIONS OFF`, or the equivalent in the build system of the learner).
-- **Layout:** each phase directory in `labs/` is one build project. Each exercise is a subdirectory with the name `ex-<phase>-<nn>-<name>`, for example `labs/phase-1-basics/ex-1-03-word-count/`, with its own targets. The main project is `labs/chess/`. Each build project configures, builds, and tests with the commands in its `README.md` (for CMake: `cmake --preset dev`, `cmake --build --preset dev`, `ctest --preset dev`). The learner builds the project setup in phase 0 (exercises 0.3–0.9) and copies it to later projects. Do not give the learner a complete setup: see `docs/mentor/mentoring.md`, "Project setup".
+- **Layout:** each phase directory in `labs/` is one build project. Its name is `<phase>-<name>`, for example `0-tools`. Use short names that describe the phase and the exercise. Each exercise is a subdirectory with the name `<nn>-<name>`, for example `labs/1-basics/03-word-count/`, with its own targets. The main project is `labs/chess/`. Each build project configures, builds, and tests with the commands in its `README.md` (for CMake: `cmake --preset dev`, `cmake --build --preset dev`, `ctest --preset dev`). The learner builds the project setup in phase 0 (exercises 0.3–0.9) and copies it to later projects. Do not give the learner a complete setup: see `docs/mentor/mentoring.md`, "Project setup".
 - **Warnings:** enable the warning set of the course (`docs/software-setup.md`, "Warnings") and treat warnings as errors in the course code. Do not disable a warning for the whole project. Disable it for one line or one file, with a comment that explains why.
 - **Format and lint:** run clang-format with the `.clang-format` file of the project. Run clang-tidy with the `.clang-tidy` file of the project. Fix all findings, or add `// NOLINT(<check>)` with a comment that explains why the finding is accepted.
 - **Sanitizers:** the debug preset builds with AddressSanitizer and UndefinedBehaviorSanitizer where the compiler supports them. Tests must pass under the sanitizers. From phase 6, the tests of concurrent code also run under ThreadSanitizer (GCC or Clang).
