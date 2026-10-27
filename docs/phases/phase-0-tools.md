@@ -75,6 +75,9 @@ Rules that follow from this model:
 
 - A build system knows the targets of a project (libraries, executables, tests), their source files, their options, and the dependencies between them. It compiles only what changed.
 - **CMake** is the default in the course documents. CMake is a build system generator: it reads `CMakeLists.txt` and writes the files for a build tool (Ninja, Make, or a Visual Studio solution). Read [../topics/build-systems.md](../topics/build-systems.md) for the alternatives (Meson, xmake, Bazel, Make) and the command translation.
+- **Build sequence:** identify which tool reads the project description, determines dependencies, selects the required steps, and runs the compiler and linker. A generator has a configuration step before the build tool runs. Other build systems combine these operations. Explain the sequence for your selected tools.
+- **Dependencies:** the build system needs to know which outputs depend on each source file and header. Explain how your selected tools discover header dependencies. Cover the first build, when no dependency records exist, and later builds, which can use records from an earlier compilation. Explain what happens when a header is removed or renamed. A missing header that the source still includes remains an error. Use the dependency handling that your tools provide; handwritten dependency rules are optional learning work.
+- **Reusable settings:** use the selected tool's settings, variables, or functions for shared compiler options and output paths. Before using them, explain when their values are evaluated and which tool interprets each expression. Explain the path and quoting rules where a command passes from the build tool to a shell. Do not assume that shell quoting also applies to the build description.
 - A minimal CMake project:
 
   ```cmake
@@ -104,7 +107,8 @@ Rules that follow from this model:
   | `cmake --build --preset dev`, `ctest --preset dev` | Build and test with a preset |
 
 - **Build types:** `Debug` (no optimization, debug information), `Release` (optimized, `NDEBUG` is defined, so `assert` does nothing), `RelWithDebInfo` (optimized, with debug information; good for profiling). Undefined behavior can give different results in different build types.
-- **Out-of-source builds:** all generated files go into the build directory. Never commit the build directory. To start from zero, delete it.
+- **Out-of-source builds:** keep generated files in a separate build directory from the first build. Identify object files, executables, generated build files, and dependency records. Explain which files can be regenerated and which files belong in git. Ignore the build directory before the first build. If the tool manages its own output directories, use that layout and explain it.
+- **Clean and parallel builds:** a clean operation removes generated outputs. Use the tool's existing operation when available. Explain its deletion scope before running it; a clean operation can preserve configuration and dependency records. A build from a new build directory also checks that the project does not need old generated files. In a parallel build, every required input and output directory must exist before the dependent command runs. Use the tool's automatic handling where available. See [Build checks](../topics/build-systems.md#build-checks) for the checks and tool-specific commands.
 - **Presets:** `CMakePresets.json` gives names to configurations, so that every developer and the CI use the same settings. A minimal file with one configure preset:
 
   ```json
@@ -245,6 +249,8 @@ The project setup is complete when it meets these requirements. Exercise 0.9 che
 | Requirement | Exercise |
 |---|---|
 | Out-of-source builds; the build directory is not in git | 0.3 |
+| Automatic header dependency tracking; checked incremental and clean parallel builds | 0.3 |
+| A clean operation with a known deletion scope | 0.3 |
 | A library target with public headers in `include/<project>/`, sources in `src/`, and a thin executable in `app/` | 0.3 |
 | C++23 without compiler extensions | 0.3 |
 | `compile_commands.json` for clangd and clang-tidy | 0.3 |
@@ -286,6 +292,8 @@ During the linker error checks, follow [Teach diagnostic reading](../mentor/ment
 
 Do each step, and do its check before you continue.
 
+Use your selected build system. The CMake names below show the default implementation. Before the first build, explain the build sequence, the output locations, and the files that git must ignore. Before each later step, explain the new settings and when the tools evaluate them. Use [Build checks](../topics/build-systems.md#build-checks) to translate the checks. Do not write custom dependency, directory-creation, or clean rules when the selected tools already provide them.
+
 1. **One executable.** Write the root build file with `cmake_minimum_required` and `project()`. In `ex-0-03-first-project/`, write a build file with one executable target from `main.cpp`, and add the subdirectory to the root build file. Configure the root into a separate build directory, build, and run the executable.
    - Check: `git status` shows no generated file. All generated files are in the build directory.
 2. **A library and an executable.** Move `make_greeting` into a library target `greeting`: the header in `include/greeting/greeting.hpp`, the source in `src/greeting.cpp`. The executable in `app/main.cpp` links the library and includes `<greeting/greeting.hpp>`. The include directory is a usage requirement of the library (`target_include_directories(greeting PUBLIC include)`), not a global setting.
@@ -296,6 +304,14 @@ Do each step, and do its check before you continue.
    - Check: in the editor, go to definition from `app/main.cpp` goes into `src/greeting.cpp`, and the editor shows no false errors.
 5. **Use it.** Read a name from the first command-line argument, and print a usage message to stderr and return a non-zero exit code if the argument is missing or the name is not valid.
 6. **Build types.** Build a `Debug` and a `Release` configuration of the root project in two build directories. Compare the size of the executables.
+7. **Incremental builds.** Before each check, predict which translation units need compilation and which libraries or executables need an update. Build after each change and explain the selected steps. Do not require identical output or command counts across tools.
+   - Check: build again without changing any input. No compilation or linking is needed.
+   - Check: change only the implementation in one source file. Unaffected translation units do not need compilation.
+   - Check: change the shared project header. Translation units that include it, directly or indirectly, need compilation. Explain how the tools discover those dependencies.
+8. **Clean and parallel builds.** Identify the tool's clean operation and its deletion scope. Keep only generated files in that scope. Run the clean operation, rebuild, and run the program. Then configure and build in a new build directory with parallel execution enabled. Use the selected tool's output layout if it manages the directories itself.
+   - Check: the build succeeds without old generated files. Directories and generated inputs exist before commands need them. The program runs. A subsequent unchanged build needs no compilation or linking.
+
+Before completing the exercise, explain the first build and one later rebuild. A successful command alone does not verify that you understand the dependencies.
 
 ### Exercise 0.4: Read compiler and linker errors (core)
 
@@ -436,6 +452,7 @@ std::println("{}", first);
 - [ ] I can explain the jobs of the preprocessor, the compiler, and the linker, and the difference between a declaration and a definition.
 - [ ] I can explain a linker error and find its cause.
 - [ ] I can explain the difference between the debug and the release build types, and why UB can give different results in each.
+- [ ] I can explain the build sequence and header dependency discovery for my selected tools. I can predict the required steps after a source or header change. My clean parallel build and unchanged-build checks pass.
 - [ ] I wrote the project setup myself: the build file, the warning set, the sanitizer option, the presets, and the format and lint files. It meets all requirements in the table of the exercises.
 - [ ] My code has no warnings with the warning set of the course, is formatted with clang-format, and has no clang-tidy findings (or a written reason for each one).
 - [ ] I can find an out-of-range access and a use after free with AddressSanitizer.

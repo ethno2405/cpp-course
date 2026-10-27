@@ -55,7 +55,30 @@ CMake with Ninja is the default of the course. Ninja is fast, and it works the s
 | Release build | `cmake --preset release` then build | `meson setup build/release --buildtype=release` | `xmake f -m release` then `xmake` | `bazel build -c opt //...` |
 | Select the compiler | `-DCMAKE_CXX_COMPILER=clang++` (first configure only) | `CXX=clang++ meson setup ...` | `xmake f --toolchain=clang` | `CC=clang bazel build ...` |
 | Sanitizers | A cache variable and target options (phase 0, exercise 0.7) | `-Db_sanitize=address,undefined` | `set_policy("build.sanitizer.address", true)` | `--copt=-fsanitize=address --linkopt=-fsanitize=address` |
-| Clean | Delete the build directory | Delete the build directory | `xmake clean` | `bazel clean` |
+| Clean generated outputs | `cmake --build --preset dev --target clean` | `meson compile -C build/dev --clean` | `xmake clean` | `bazel clean` |
+
+### Build checks
+
+Use these checks with your selected tools. Predict the required compilation and linking before each check. Then inspect the build output and explain the result. Library updates and configuration steps can add valid commands. Do not compare exact command counts between build systems.
+
+| Check | What to verify |
+|---|---|
+| First build | The build succeeds without old generated files. Identify where the tools store outputs and dependency records. |
+| Unchanged build | No compilation or linking is needed. The tool can still check or update its configuration. |
+| One source change | Compile the changed translation unit and update dependent outputs. Unaffected translation units do not need compilation. |
+| Shared-header change | Compile the translation units that include the header, directly or indirectly. Update dependent outputs. |
+| Clean and rebuild | Explain what the clean operation removes and preserves. Rebuild and run the program. |
+| Parallel build from a new build directory | Commands run only after their required inputs and output directories exist. The program builds and runs without files from an earlier build. |
+
+Use a small implementation change for the source check. Use a valid header change for the header check. Do not change compiler options or unrelated files during these checks.
+
+With CMake, use `cmake --build build --verbose` to inspect commands. Use `cmake --build build --parallel 2` to allow two concurrent build jobs. These commands apply to both the Makefile and Ninja generators. Select the generator when configuring a new build directory. Do not edit the generated Makefiles or `build.ninja`. For a generator with multiple configurations, also select the configuration with `--config Debug`.
+
+With Meson, use `meson compile -C build -v` to inspect commands and `meson compile -C build -j 2` for two concurrent jobs. For other tools, use their documented verbose and parallel-build options. If the tool manages its own output directories or cache, use its documented way to check a build without old outputs.
+
+Header dependency discovery depends on the compiler and build tools. CMake and Meson configure this handling for supported toolchains. Verify it with the header-change check; do not add handwritten dependency files to these projects. If you study a handwritten Makefile, explain how compiler-generated dependency files are created on the first compilation and read on later builds. Explain how stale records are handled after a header is removed or renamed. In every toolchain, a source file that still includes a missing header is an error.
+
+A clean operation can preserve configuration files, dependency records, or cached results. It is not always the same as removing a build directory. Before any deletion, explain the exact scope and check that it contains only generated files. Prefer the selected tool's existing clean operation. Add a custom operation only if the project needs it.
 
 ### The same project in each build system
 
@@ -220,6 +243,9 @@ $ cmake --build --preset dev
 ## Sources
 
 - CMake documentation: "CMake Tutorial", "cmake-buildsystem(7)", "cmake-presets(7)" (cmake.org)
+- [CMake command-line reference](https://cmake.org/cmake/help/v3.28/manual/cmake.1.html): build, verbose output, parallel jobs, and clean targets
+- [Ninja manual](https://ninja-build.org/manual.html): generated build files, header dependencies, and output directory creation
+- [Meson commands](https://mesonbuild.com/Commands.html#compile): compile, verbose output, parallel jobs, and clean
 - Henry Schreiner and others, "An Introduction to Modern CMake" (cliutils.gitlab.io/modern-cmake)
 - Meson documentation, "Tutorial" and "Reference manual" (mesonbuild.com)
 - xmake documentation (xmake.io)
