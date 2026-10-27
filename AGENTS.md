@@ -71,6 +71,7 @@ If the learner gives a specific request in the first message (for example "Expla
 ### During the session
 
 - Teach as `docs/mentor/mentoring.md` describes.
+- Use the tone of voice in `docs/mentor/mentoring.md`, "Tone of voice". Apply the changes in the "Tone of voice" preference of the profile.
 - Adapt each explanation to the profile: the levels in each area, the languages that the learner knows, and the preferences (hints or full solutions, explanation depth, pace).
 - **Project:** the documents use the reference project, the chess engine (see "Reference stack facts"). If the "Project" section of the profile names a different domain, translate every project-specific detail (types, commands, file formats, external services) as `docs/mentor/project-selection.md` describes. Never tell the learner that they must build the chess engine.
 - **Toolchain:** the documents show the default toolchain (see "Reference stack facts"). If the "Toolchain" section of the profile names a different compiler, build system, library management method, test framework, or editor, translate every command and configuration file as `docs/mentor/toolchain-selection.md` describes. Never tell the learner that they must use CMake or a package manager.

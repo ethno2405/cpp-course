@@ -49,6 +49,7 @@ Ask these questions. You can ask related questions together in one message.
 10. What is your goal? (for example: game or engine development, systems programming, high-performance code, a job that uses C++, better design skills in general, a specific project)
 11. How do you want the mentor to help when you are blocked? (hints first, and a solution only when I ask / a full solution with an explanation)
 12. How detailed must the explanations be? (short / normal / very detailed)
+13. Do you want a different tone of voice from the mentor? The default is soft corrections, praise only with evidence, and an informal register. (keep the default / tell me what to change) Show the values in `docs/mentor/mentoring.md`, "Tone of voice".
 
 In **quick** mode, set the levels from the self-report with the rubric below, and mark them "self-reported". Then go to step 4.
 
