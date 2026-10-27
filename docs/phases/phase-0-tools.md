@@ -292,6 +292,8 @@ During the linker error checks, follow [Teach diagnostic reading](../mentor/ment
 
 Do each step, and do its check before you continue.
 
+Open `labs/` as the default editor workspace. The build project root is `labs/0-tools/`, not the workspace root. Run this exercise's terminal commands from `labs/0-tools/` unless a step specifies another directory. Keep editor settings under `labs/`. Follow the conditional instructions for your editor and tools in [Set up the editor](../software-setup.md#3-set-up-the-editor). Adapt paths if you use another workspace layout.
+
 Use your selected build system. The CMake names below show the default implementation. Before the first build, explain the build sequence, the output locations, and the files that git must ignore. Before each later step, explain the new settings and when the tools evaluate them. Use [Build checks](../topics/build-systems.md#build-checks) to translate the checks. Do not write custom dependency, directory-creation, or clean rules when the selected tools already provide them.
 
 1. **One executable.** Write the root build file with `cmake_minimum_required` and `project()`. In `03-cmake/`, write a build file with one executable target from `main.cpp`, and add the subdirectory to the root build file. Configure the root into a separate build directory, build, and run the executable.

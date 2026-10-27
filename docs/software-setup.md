@@ -98,6 +98,12 @@ The course teaches manual library management first. You do not need a package ma
 
 ## 3. Set up the editor
 
+Use `labs/` as the default editor workspace for course code. Open this directory with the folder or workspace command of your editor. Keep editor settings under `labs/`. Each phase directory is a separate build project, for example `labs/0-tools/`. The editor workspace and the build project root do not need to be the same directory.
+
+State the working directory before each terminal command. With `labs/` open, an integrated terminal can start in `labs/`, while an exercise can require `labs/0-tools/`. Check the current directory before you run the command. If you use another workspace layout, adapt the paths explicitly.
+
+The standalone toolchain check in section 4 uses a separate scratch directory. Open that directory for the check. Use `labs/` when you start the course labs.
+
 Select the compiler and the C++23 language mode in your editor or project settings. The editor must use the same include paths and preprocessor definitions as the build.
 
 If the editor has its own C++ analysis, use its project or toolchain settings. For example, Visual Studio can read its MSBuild project, and CLion can read its CMake project. A separate clangd configuration is necessary only when you use clangd.
@@ -146,11 +152,22 @@ An alternative for a small folder is `compile_flags.txt`, with one compiler opti
 
 #### Configure a project with a build system
 
-From exercise 0.3, use the build system to generate `compile_commands.json`. With CMake and Ninja, enable `CMAKE_EXPORT_COMPILE_COMMANDS`. The database records the compiler and the options for each source file. Select the intended compiler when you first configure the build directory.
+From exercise 0.3, use the build system to generate `compile_commands.json`. With CMake and the Ninja or Unix Makefiles generator, enable `CMAKE_EXPORT_COMPILE_COMMANDS`. The database records the compiler and the options for each source file. Select the intended compiler when you first configure the build directory.
+
+Select the database for each build project. For example, if `labs/0-tools/build/dev/compile_commands.json` exists, create `labs/0-tools/.clangd` with:
+
+```yaml
+CompileFlags:
+  CompilationDatabase: build/dev
+```
+
+This path is relative to the directory that contains `.clangd`. Use `build` instead of `build/dev` before you add presets, if that is your build directory. Keep project-specific database paths in the project directory. A shared `.clangd` under `labs/` applies to all its subdirectories. See [clangd configuration](https://clangd.llvm.org/config#compilationdatabase).
 
 When the database supplies the compiler and the standard option, remove the scratch overrides for those settings. Keep a version-specific clangd workaround only while the matching problem exists. Do not copy the scratch configuration into each lab. Do not edit the generated database by hand.
 
 ### VS Code (default)
+
+For course code, open `labs/` with **File > Open Folder**. If the `code` command is available, run `code labs` from the repository root. Workspace settings are in `labs/.vscode/settings.json`. In those settings, `${workspaceFolder}` means `labs/`. VS Code does not load a nested `.vscode/settings.json` just because you open a file from that directory. See [VS Code workspace settings](https://code.visualstudio.com/docs/configure/settings).
 
 Install VS Code (code.visualstudio.com) and these extensions:
 
@@ -164,7 +181,7 @@ In VS Code, open **View > Output** and select **clangd** to read the language se
 
 For WSL, open the folder in a WSL window. Install the extensions in that WSL distribution.
 
-For the standalone GCC example above, add these workspace settings in `.vscode/settings.json`:
+For the standalone GCC example above, add these workspace settings in the scratch directory's `.vscode/settings.json`:
 
 ```json
 {
@@ -175,14 +192,12 @@ For the standalone GCC example above, add these workspace settings in `.vscode/s
 
 Keep any other settings that the workspace needs. Use your selected compiler path in place of the example path. With a different editor, put the startup argument in that editor's language server settings.
 
-Recommended settings after the project has a `dev` preset and its compilation database (`.vscode/settings.json`):
+For course code with clangd, these settings go in `labs/.vscode/settings.json`. Configure the database location in each build project's `.clangd`, as described above:
 
 ```json
 {
   "editor.formatOnSave": true,
-  "cmake.useCMakePresets": "always",
   "clangd.arguments": [
-    "--compile-commands-dir=${workspaceFolder}/build/dev",
     "--clang-tidy",
     "--header-insertion=never"
   ],
@@ -190,7 +205,19 @@ Recommended settings after the project has a `dev` preset and its compilation da
 }
 ```
 
-The path in `--compile-commands-dir` must contain `compile_commands.json`. Use this setting only after that directory exists. Change the path for a different preset or build system. For GCC or Clang, also add `--query-driver` with the exact compiler path from the database when clangd needs it to find the system headers. Restart clangd and check the command in its Output log.
+The selected database directory must contain `compile_commands.json`. Change the path for a different preset or build system. For GCC or Clang, also add `--query-driver` with the exact compiler path from the database when clangd needs it to find the system headers. Restart clangd and check the command in its Output log.
+
+#### If you use the CMake Tools extension
+
+Set `cmake.sourceDirectory` in `labs/.vscode/settings.json` to the selected build project. For phase 0, use:
+
+```json
+"cmake.sourceDirectory": "${workspaceFolder}/0-tools"
+```
+
+This is a settings entry, not a complete JSON file. Add it inside the existing settings object. It tells CMake Tools where the root `CMakeLists.txt` is. Update it when you select another phase or the main project. It does not select clangd's compilation database. Terminal CMake commands select the source directory with `-S` instead.
+
+After exercise 0.9 creates the presets, set `cmake.useCMakePresets` to `"always"` if you use CMake Tools. These settings apply only to that extension. Other editors and build tools use their own project selection.
 
 **Windows note:** with CMake and clangd, use the Ninja generator to export `compile_commands.json`. The Visual Studio generator does not export it. Visual Studio can use its own project analysis instead.
 
