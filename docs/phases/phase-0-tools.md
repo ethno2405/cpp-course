@@ -381,8 +381,9 @@ std::println("{}", first);
 4. **Format.** Write a `.clang-format` file in the project root. Start from a predefined style (`BasedOnStyle: LLVM`, `Google`, `Microsoft`, or another one), and change only what you have a reason for (for example `IndentWidth` and `ColumnLimit`). Read the "Clang-Format Style Options" page for each option that you set. Configure your editor to format on save.
    - Check: `clang-format --dry-run --Werror` on a file with a wrong indentation fails. After `clang-format -i`, it passes.
 5. **Lint.** Write a `.clang-tidy` file. Enable the check groups `bugprone-*`, `cppcoreguidelines-*`, `modernize-*`, `performance-*`, and `readability-*` (and more if you want). Run clang-tidy with the compilation database (`clang-tidy -p <build directory> <file>`). For each check that you disable, write the reason in a comment in the file. Limit the analysis to your own headers with `HeaderFilterRegex`.
-   - Check: run clang-tidy on the `average` function from step 3. It must report at least `performance-unnecessary-value-param` and a `modernize-` or `readability-` check. Read the documentation of each check that it reports.
-6. **Fix.** Fix every warning and every clang-tidy finding in `average`. Build again with warnings as errors, and run clang-tidy again. Both must report nothing.
+   - Check: run clang-tidy on the `average` function from step 3. It must report at least `modernize-loop-convert` and `readability-container-size-empty`. Read the documentation of each check that it reports.
+   - clang-tidy does not report `performance-unnecessary-value-param` yet. `values` is not `const`, so `values[i]` calls the non-`const` `operator[]`, and clang-tidy cannot prove that the function does not change `values`.
+6. **Fix.** Fix every warning and every clang-tidy finding in `average`. Build again with warnings as errors, and run clang-tidy again. Both must report nothing. After you change the loop to a range-based `for` loop, clang-tidy reports `performance-unnecessary-value-param`. Fix it too.
 
 ### Exercise 0.6: Debugger
 
