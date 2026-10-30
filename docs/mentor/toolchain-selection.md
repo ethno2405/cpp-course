@@ -57,7 +57,7 @@ Ask these questions. Use the answers that are already in the profile, and do not
 |---|---|---|---|---|
 | Windows | MSVC (Visual Studio 2022 17.10+ or Visual Studio 2026, or the Build Tools) | CMake + Ninja from a "Developer PowerShell", or the Visual Studio generator | VS Code + clangd, or Visual Studio | MSVC supports AddressSanitizer, but not UndefinedBehaviorSanitizer or ThreadSanitizer. Use clang-cl or WSL2 for them, or run them in CI on Linux. |
 | macOS | Apple Clang (Xcode command-line tools). LLVM Clang 20 or newer from Homebrew if the check program fails: Apple Clang uses libc++, and a libc++ older than version 20 does not have `std::jthread` without a flag, or floating-point `std::from_chars`. | CMake + Ninja from Homebrew | VS Code + clangd, or CLion | Apple Clang does not include `clang-format` and `clang-tidy`. Install them with the Homebrew `llvm` package. |
-| Linux | GCC 14+ (or Clang 18+ with libstdc++ 14) from the distribution | CMake + Ninja from the distribution (or from Kitware or `pip` if the version is older than 3.28) | VS Code + clangd, or CLion | All sanitizers work. |
+| Linux | GCC 14+ (or Clang 19+ with libstdc++ 14) from the distribution | CMake + Ninja from the distribution (or from Kitware or `pip` if the version is older than 3.28) | VS Code + clangd, or CLion | All sanitizers work. |
 
 ### Library management
 

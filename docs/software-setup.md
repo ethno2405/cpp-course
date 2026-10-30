@@ -20,7 +20,7 @@ You need five things:
 |---|---|---|
 | Windows | MSVC (Visual Studio 2022 17.10 or newer, or Visual Studio 2026) | clang-cl (Clang with an MSVC-compatible interface), MinGW-w64 GCC through MSYS2, GCC or Clang in WSL2 |
 | macOS | Apple Clang from the Xcode command-line tools | LLVM Clang from Homebrew, GCC from Homebrew |
-| Linux | GCC 14 or newer | Clang 18 or newer with libstdc++ 14, or Clang 20 or newer with libc++ |
+| Linux | GCC 14 or newer | Clang 19 or newer with libstdc++ 14, or Clang 20 or newer with libc++ |
 
 If you do not know what to select, use the defaults. You can change the compiler and the editor later at a low cost. A change of the build system costs more after phase 4.
 
@@ -346,7 +346,7 @@ If compilation succeeds but the editor reports missing C++ features, first check
 
 If the settings are correct, check the clangd version and its compatibility with the standard library. clangd can have a parser defect even when GCC accepts the program. Two known cases are:
 
-- With libstdc++, clangd 18 can report that `std::expected` is missing. Use clangd 19 or newer for this case. See the [Clang 19 release notes](https://releases.llvm.org/19.1.0/tools/clang/docs/ReleaseNotes.html#c-20-feature-support).
+- With libstdc++, clangd 18 and clang-tidy 18 report that `std::expected` is missing. Clang 18 defines `__cpp_concepts` as `201907L`, and libstdc++ 14 declares `std::expected` only for `202002L` or higher. Use version 19 or newer of each tool. See the [Clang 19 release notes](https://releases.llvm.org/19.1.0/tools/clang/docs/ReleaseNotes.html#c-20-feature-support).
 - With libstdc++ 14, clangd can report that `forward_like` with a deduced return type is used before its definition in a ranges expression. For this exact diagnostic, add `-fno-builtin-std-forward_like` to the `Add` list in the local `.clangd` file. This is a clangd workaround. Keep it out of the GCC build options. See [clangd issue 2575](https://github.com/clangd/clangd/issues/2575).
 
 Use these workarounds only after you reproduce the matching problem. Keep real warnings visible. Do not change working course code to an older C++ form to satisfy an editor with the wrong configuration.
@@ -388,7 +388,7 @@ The course uses only the features that all supported compilers have. The minimum
 
 "Check" means that support is new, partial, or different in each version. Read the compiler support page before you use the feature.
 
-The column "Clang with libc++" gives the libc++ version. With Clang and libstdc++ (the default on Linux), the library features follow the GCC column, and the language features (deducing `this`) need Clang 18.
+The column "Clang with libc++" gives the libc++ version. With Clang and libstdc++ (the default on Linux), the library features follow the GCC column, and the language features (deducing `this`) need Clang 18, and `std::expected` needs Clang 19.
 
 ## 6. Warnings
 
