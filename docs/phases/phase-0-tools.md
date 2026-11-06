@@ -402,7 +402,11 @@ std::println("{}", first);
 3. Write a small program in `07-sanitizers/` for each error. Run each one in a debug build without sanitizers, and then with `address;undefined`. Write the result of each run in your notebook.
    1. Read the element after the end of a `std::vector` with `operator[]` (the last fragment of exercise 0.4).
    2. Keep a reference to an element of a `std::vector`, call `push_back` many times, then read through the reference.
-   3. Return a reference to a local variable from a function, and read it in the caller. With GCC and Clang, AddressSanitizer finds this error only when you set the environment variable `ASAN_OPTIONS=detect_stack_use_after_return=1`. MSVC needs the extra compile option `/fsanitize-address-use-after-return` and the same environment variable.
+   3. Return a reference to a local variable from a function, and read it in the caller. Use the return type `const int&`. In C++23, `return value;` with the return type `int&` does not compile, because the compiler treats the returned local variable as an rvalue. The result is different for each compiler:
+      - GCC replaces the returned reference with a null reference. The build without sanitizers usually crashes, and UndefinedBehaviorSanitizer reports `reference binding to null pointer`. AddressSanitizer reports nothing.
+      - Clang keeps the address of the local variable. The build without sanitizers can print the old value, and AddressSanitizer reports `stack-use-after-return`.
+      - To see the AddressSanitizer report with GCC, hide the local variable from the compiler: return it through a function `const int& pass_through(const int& x) { return x; }`. GCC then gives no warning, and AddressSanitizer reports `stack-use-after-return`.
+      - With GCC 14 and current Clang versions on Linux, AddressSanitizer finds this error by default. The environment variable `ASAN_OPTIONS=detect_stack_use_after_return=0` switches it off. If AddressSanitizer does not report it on your platform, set `ASAN_OPTIONS=detect_stack_use_after_return=1`. MSVC needs the extra compile option `/fsanitize-address-use-after-return` and the same environment variable.
    4. Shift `1` to the left in an `int`. Read the shift count from the command line, and run the program with 40.
    5. `factorial(20)` from exercise 0.6.
 
