@@ -250,7 +250,7 @@ Then the compiler:
 | Compiler | Command | Minimum |
 |---|---|---|
 | GCC | `g++ --version` | 14 |
-| Clang | `clang++ --version` | 18 with libstdc++ 14; 20 with libc++ |
+| Clang | `clang++ --version` | 19 with libstdc++ 14; 20 with libc++ |
 | MSVC | `cl` (without arguments) | 19.40 |
 | Apple Clang | `clang++ --version` | The check program decides |
 
